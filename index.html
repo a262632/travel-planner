@@ -298,4 +298,17 @@
         });
 
         cancelClearButton.addEventListener('click', () => {
-            messageBox.classList.add('hidden
+            messageBox.classList.add('hidden');
+        });
+
+        confirmClearButton.addEventListener('click', () => {
+            localStorage.removeItem('travelTrips');
+            messageBox.classList.add('hidden');
+            renderTrips();
+        });
+
+        // 頁面載入時執行
+        window.onload = renderTrips;
+    </script>
+</body>
+</html>
