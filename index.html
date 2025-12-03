@@ -3,1546 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>旅遊行程規劃 (黑色主題)</title>
-    <!-- 載入 Tailwind CSS -->
+    <title>旅行規劃 App</title>
+    <!-- PWA / iOS / Android App 設定 -->
+    <meta name="theme-color" content="#3b82f6"> <!-- Android 狀態列顏色 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="旅行規劃">
+
+    <!-- PWA Manifest - 使用 Data URI 內嵌，強制 Android 進入 standalone 模式 -->
+    <!-- 這是修正 Samsung 瀏覽器無法全螢幕的關鍵 -->
+    <link rel="manifest" href="data:application/json;charset=utf-8, {
+      "name": "旅行規劃 App",
+      "short_name": "旅行規劃",
+      "start_url": "./",
+      "display": "standalone",
+      "background_color": "#ffffff",
+      "theme_color": "#3b82f6",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzNiODJmNiI+PHBhdGggZD0iTTAgMGgyNHYyNEgweiIvPjxwYXRoIGQ9Ik0zIDV2MTRoMThWNUgzeiIvPjxwYXRoIGQ9Ik0yMCA2aC0uOTljLS41Ni0uNTUtMS40Mi0xLTItMVMyLjk1IDIgMy43OCA0LjYyIDQgNi42NSAyLjUgOC4yNUwxLjM1IDkuNDJjLS4zMi4zMi0uNS43NS0uNSA0LjAxLS4wMSAxLjMxLjU0IDIuMTUgMS43IDEuNzEuNDYtLjE1LjctLjUyLjctLjg5cy0uMjUtLjc1LS45LS44Ny0uNjItLjQ4LS41Ny0uOTVsLjM1LTEuMTljLjEtLjMyLjQtLjU3LjgtLjg3LS40MS0uMDctLjYxLS4xNy0uNzYtLjMyLS41MS0uNjMtLjM4LTEuMTkuMzQtMS44Ni4xNS0uMTMuMTktLjI5LjE0LS40NS0uMDYtLjIuMTktLjM1LjQtLjM1aDIuNjVjLjM5IDAgLjczLjA0IDEuMDcuMTJsLjMyLjA4Yy4zMi0uMDguNjMtLjEyLjk0LS4xMi4zMSAwIC42Mi4wNCAuOTMuMTFsLjMyLjA4Yy4zNC0uMDguNjktLjE3IDEuMDctLjI1aDIuNjVjLjIxIDAgLjQ2LjE1LjQgLjM1LS4wNS4xNi0uMDEuMzIuMTQuNDUuNzIuNjcuODUgMS4yMy4zNCAxLjg2LS4xNS4xNS0uMzQuMjUtLjc2LjMyLjM4LjMtLjQxLjYtLjYyLjgyLS42Ni44MS0uNTUgMS40My0uNDcgMi4wNi4wOC41Ni40Mi44MS42NyAxLjEzLjE4LjIxLjMyLjQ0LjMyLjcyIDAgLjIyLS4wNy40Mi0uMjMuNTZsLS41MS42MmMtLjMxLjM4LS42LjY5LS42LjcyIDAgLjIyLjA3LjQ2LjIzLjU4TDIgMjAuNDJjLjM1LjIxLjc4LjMzIDEuMjUuMzMuNjUgMCAxLjI1LS4xMyAxLjg1LS40M0wxMyAyNC4wMWMtLjc2LS4xMS0xLjQ4LS4yOS0yLjE4LS41MnptLTkuNjUtMTQuNzJjLS4xOCAwLS4zNS0uMDItLjUxLS4wNi0uMDMtLjAxLS4wNi0uMDItLjEtLjA2LS4zNy0uMi0uNTctLjQ3LS42OC0uNzItLjEyLS4zMi0uMDgtLjY5LjA1LTEuMDRsLjc1LTEuOTlIMS4zNWMuMzEgMCAuNi0uMTEuODEtLjM2LjQxLS41LjM0LTEuMDItLjE2LTEuNTFsLS41OS0uNjdjLS4xNi0uMTctLjIyLS40MS0uMTYtLjY1LjA2LS4yMy4yNy0uNDIuNTUtLjU5LjI1LS4xNS41My0uMjYuOC0uMjlWNy43NWMuNjEtLjE5IDEuMDktLjMzIDEuNDktLjQ3LjIxLS4wOC4zNC0uMjguMzQtLjQ4IDAtLjE5LS4xMi0uMzktLjMyLS40Ny0uNDEtLjE1LS44NS0uMjUtMS4zMS0uMzktLjQ3LS4xNS0uODMtLjMzLTEtLjU0LS4xNC0uMTYtLjIxLS4zNS0uMjEtLjU1IDAtLjIuMDctLjQtLjE0LS40NWwxLjQtLjQ1Yy0uMTItLjA1LS4yMi0uMTItLjMyLS4xNy0uNDQtLjIyLS42Ny0uNTItLjctLjgyLS4wNS0uMjgtLjA4LS41OS0uMDgtLjkxIDAtLjQ3LjA3LS44Ni4xNy0xLjE1LjE0LS40LjQtLjcuNzYtLjk0LjI3LS4xNy41Ni0uMzUuODctLjU1Ljc2LS41MSAxLjQ3LS45NCAyLjItMS4zYy43Mi0uMzYgMS40Ny0uNTQgMi4yNy0uNTRoLjI3YzEuNTMgMCAyLjgyLjQ0IDQgMS4zMi4yMS4xLjQzLjM5LjUzLjU3LjA4LjI2LjEyLjU0LjEzLjg1IDAgLjM2LS4wOC43LS4yNSAxLjA1LS4wOS4yLS4yNS4zNy0uNTEuNDUtLjMzLjEtLjY1LjI3LS45NS40NC0uNS4zLS44NS42Ni0uOTIgMS4wOC0uMDYuMzYuMDguNzYuMzUgMS4wNS4wNy4wOC4xOC4xMy4zLjE2LjI1LjA3LjUyLjEuNzkuMDhhNC40IDQuNCAwIDAgMSAuNjUtLjA2Yy41MS0uMTguOTgtLjQxIDEuNDEtLjczLjU3LS40MiAxLS45MyAxLjI3LTEuNTguMTktLjQ0LjI4LS44OC4yOC0xLjM2VjcuODNjLS4wMS0uMTctLjA3LS4zMy0uMTgtLjQ4LS4yLS4zLS40Ni0uNTctLjc2LS44My0uNzEtLjU4LTEuNDctMS4wNy0yLjM0LTEuNDQtLjQzLS4xOC0uODgtLjMzLTEuMzYtLjQ2LS4xOC0uMDQtLjM3LS4wNy0uNTUtLjA3aC0uMDZjLS42MyAwLTEuMjUuMTEtMS44Ni4zMy0uMjQuMDgtLjUxLjE5LS43OC4zMy0uMjkuMTUtLjU2LjMyLS44LjUuMjcuMTkuNTIuMzcuNzEuNTcuNDUuNDcuNjIuOTUuNTEgMS40MS0uMTIuNDItLjQyLjgtLjg3IDEuMTQtLjMuMjMtLjY0LjQtLjk2LjU0LS42My4yOS0xLjMxLjQzLTIuMDIuNDMtLjkgMC0xLjc3LS4xNS0yLjU1LS40M1Y3LjczYzEuMTQtLjAzIDIuMDUuNjIgMi4wNSAxLjMyIDAgLjIzLS4wOC40My0uMjMuNTZsLS41MS42MmMtLjMxLjM4LS42Ljc2LS42LjczIDAgLjIyLjA3LjQyLjIzLjU2bDcuMS45NWgxLjdjLjA3LS4wMS4xMi0uMDQuMTktLjA3LjUtLjIzLjgzLS42NS44My0xLjEzIDAtLjM4LS4yNi0uNzgtLjctLjE3LS40MS0uNTMtLjc2LS45My0xLjA3LTEuMzMtLjQ3LS42Ni0uNzUtMS40LS43NS0yLjIzIDAtLjgzLjI3LTEuNS43My0yLjA3LjI3LS4zNC41NS0uNjQuODYtLjg4LjY4LS41NSAxLjQtMS4wMyAyLjItMS40Mi44Mi0uNCAxLjctLjU5IDIuNi0uNTloLjA3Yy43OSAwIDEuNTUuMTUgMi4yNS40NC4zNC4xNC42Ni4zLjkyLjQ4Ljc2LjQ4IDEuNC45OSAxLjk0IDEuNjMuMjkuMzQuNTEuNjkuNjMgMS4wNS4wOS4zNC4wNS43NC0uMDcgMS4xNi0uMDUuMTctLjIuMzQtLjQxLjQ0LS4zNS4xNi0uNzMuMjQtMS4xLjI0LS43NSAwLTEuMjYtLjU3LTEuMy0xLjMzLS4wMy0uNDcuMjUtLjg2LjctMS4wOC4xLS4wNS4xOC0uMTIuMjMtLjIuMi0uMzQuMTEtLjc0LS4xOS0xLjAyLS4zNy0uMzUtLjc5LS41Mi0xLjMtLjUyLS4yNyAwLS41My4wNS0uNzguMTItLjM4LjEyLS44LjI2LTEuMjUuNDItLjQ3LjE3LS45Ni4zNi0xLjQ0LjU2VjcuNjZjLjI0LS4wOS41LS4xOC43Ni0uMjdWMjAuMDNjLS4zMiAwLS42LS4xMS0uODItLjMyLS40My0uNS0uMzYtMS4wMi4xNS0xLjUxbDEuMjItMS4zOC0xLjA5LTEuMzFjLjQyLS40NC44OS0uODEgMS40MS0xLjA1LjE5LS4wOC4zNS0uMi4zNS0uNDIgMC0uMi0uMTItLjM3LS4zNC0uNDctLjMtLjE2LS42My0uMzItLjk2LS40OS0uNTEtLjI1LS45Ny0uNTUtMS4zNy0uOTItLjM0LS4zMS0uNjMtLjY1LS44NC0uOTYtLjE1LS4yMi0uMjQtLjQ4LS4yNC0uNzMgMC0uMy4xLS41Ny4yNy0uOC4wNy0uMDkuMjEtLjE1LjM3LS4xNWgxLjQyYy40MSAwIC44MS4wMyAxLjIxLjEuNDEuMDcuODQuMTkgMS4yNS4zNy40My4xOC44OC40MyAxLjMyLjcuNTQuMzIgMS4wNi42OCAxLjU3IDEuMDkuMTMuMTEuMjMuMjQuMjMuNDQgMCAuMjEtLjA5LjM5LS4yNi41Mi0uNTMuMzgtMS4wNi43LTEuNTggMS4wMS0uMjcuMTYtLjU2LjMtLjg2LjQyLS40OS4xNy0xIC4yOC0xLjUxLjM3LS4wNy4wMi0uMTQuMDQtLjIxLjA1VjcuNDRjLS4yNi0uMDktLjUzLS4xNy0uOC0uMjMgMS4wOS0uMDMgMi4yNS41MyAyLjI1IDEuMzQgMCAuMjEtLjA5LjQxLS4yNi41M2wtLjgxLjg1Yy0uMi4yMS0uMy40OC0uMjkuNzUgMCAuMjguMDcuNTMuMjMuNzRsMi4yNSAyLjZjLjEyLjE1LjE4LjM0LjE4LjU0IDAgLjIzLS4wOC40My0uMjMuNTZsLS41Mi42MmMtLjMxLjM4LS42Ljc2LS42LjczIDAgLjIyLjA3LjQyLjIzLjU2bDEuMTQtMS41MWMuMTktLjIzLjQtLjQ3LjYyLS43Mi43MS0uNzYgMS40NS0xLjQ0IDIuMjUtMS45NWMuNTctLjM3IDEuMTctLjY1IDEuOC0uODMuMzEtLjA5LjYzLS4xMy45NS0uMTMuODIgMCAxLjU2LjE2IDIuMjguNDcgLjM2LjE2LjY4LjM5Ljk2LjY5LjY4Ljc0IDEuMzEgMS42MiAxLjggMi42MS4xLjItLjEuNC0uMTUuNi0uMDMuMDgtLjA1LjE2LS4wNi4yNS0uMDcgLjQ1LjA5LjcuNDYgMS4xMS4zNi4zOS41LjguNCAxLjE5VjcuMzZjLjQ3LS4wOC45Ny0uMjIgMS40Ny0uNDNsMi42Ni0uOTdjLjE1LS4wNi4zLS4xLjQ3LS4xLjI4IDAgLjUzLjEyLjcxLjM0LjIgLjIyLjMxLjUuMzEuNzIgMCAuMjItLjA3LjQzLS4yMy42Yy0uMzUuMzMtLjc0LjYzLTEuMTcuOTYtLjU1LjQxLTEuMTEuNzYtMS42OCAxLjA1LS4zNi4xOC0uNzQuMzEtMS4xMy4zOWg0LjA2Yy4yNyAwIC41Mi4xMi42OS4zNC4xNy4yMi4yNi41LjI2LjcyIDAgLjIyLS4wNy40My0uMjMuNWMtLjM5LjMzLS44MS42Mi0xLjI4Ljg0LS41LjIyLTEuMDMuNDQtMS41OC42NS0uMzQuMTMtLjY5LjI1LTEuMDQuMzdWMjAuNDNjLjMxIDAgLjYtLjExLjgyLS4zMkwyMy4yNCA5LjQzYy4xNS0uMTYuMjMtLjM2LjIzLS41OCAwLS4yMi0uMDctLjQ0LS4yMy0uNTgtLjM1LS4zMy0uNzQtLjYyLTEuMTctLjg0LS40Ny0uMjItLjk3LS40MS0xLjQ4LS41Ny0uMjUtLjA4LS41LS4xMy0uNzYtLjE1VjYuNjdjLjMtLjA4LjYxLS4xNS45Mi0uMjQuNTMtLjE2IDEuMDctLjQzIDEuNTgtLjc4LjE4LS4xMi4zMS0uMzMuMzEtLjU1IDAtLjE3LS4wNy0uMzQtLjE4LS40OC0uMTYtLjIxLS40LS4zNS0uNjktLjM1aC01LjRjLS4yOSAwLS41My4xMi0uNzEuMzMtLjE1LjI2LS4yMS41NS0uMTkgLjg0VjcuMzZ6IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }">
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 載入 Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* 設定字體為 Inter，並提供 fallback */
-        :root {
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-        }
-        /* 讓可點擊的標題看起來像連結 */
-        .activity-link:hover {
-            text-decoration: underline;
-            /* 調整為在深色背景上更清晰的藍色 */
-            color: var(--color-blue-400, #60a5fa); 
-        }
-        /* 讓花費列表在手機上保持可讀性 */
-        #expenses-list li {
-            word-break: break-word;
-        }
-        /* 調整輸入框的背景和文字顏色，確保在深色模式下的可見性 */
-        input:not([type="checkbox"]):not([type="radio"]), select, textarea {
-            background-color: #374151 !important; /* bg-gray-700 */
-            color: #ffffff !important; /* text-white */
-            border-color: #4b5563 !important; /* border-gray-600 */
-        }
-        /* 滾動條樣式調整以適應深色模式 */
-        #expenses-list::-webkit-scrollbar, #tab-container::-webkit-scrollbar, #image-preview-area::-webkit-scrollbar {
-            height: 4px;
-            width: 4px;
-        }
-        #expenses-list::-webkit-scrollbar-thumb, #tab-container::-webkit-scrollbar-thumb, #image-preview-area::-webkit-scrollbar-thumb {
-            background-color: #4b5563; /* gray-600 */
-            border-radius: 2px;
-        }
-        #expenses-list::-webkit-scrollbar-track, #tab-container::-webkit-scrollbar-track, #image-preview-area::-webkit-scrollbar-track {
-            background-color: #1f2937; /* gray-800 */
-        }
-         /* 載入動畫 (Spinner for Image Generation) */
-        .loading-spinner {
-            border-top-color: #3B82F6;
-            border-right-color: #3B82F6;
-            border-bottom-color: transparent;
-            border-left-color: transparent;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        /* 隱藏 Chrome/Android 的網址列和狀態列 */
+        body, html { height: 100%; overflow: auto; }
+        @media all and (display-mode: standalone) {
+            .browser-chrome { display: none; }
         }
     </style>
 </head>
-<body class="bg-gray-900 min-h-screen text-gray-100">
+<body class="p-4 sm:p-6 md:p-8 min-h-screen">
 
-    <!-- 載入畫面 (調整顏色以適應黑暗模式) -->
-    <div id="loading" class="fixed inset-0 bg-gray-900/90 backdrop-blur-sm flex items-center justify-center z-50">
-        <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500"></div>
-        <p class="ml-4 text-lg text-gray-300">載入中，請稍候...</p>
-    </div>
-
-    <!-- 主容器 -->
-    <div class="max-w-4xl mx-auto p-4 md:p-6">
-        <header class="text-center mb-6">
-            <h1 class="text-3xl font-extrabold text-white border-b border-gray-700 pb-2">我的日本之旅：行程規劃</h1>
-            <p class="text-sm text-gray-400 mt-1">12月13日 (第一天) - 12月20日 (第八天)</p>
-            <p id="user-id-display" class="text-xs text-gray-500 mt-1">已連結到雲端帳戶 (私人行程)</p> 
-            
-            <!-- 實時匯率及總花費顯示區塊 (深色調整) -->
-            <div id="cost-dashboard" class="mt-4 p-4 bg-gray-800 border border-red-600 rounded-xl shadow-xl mx-auto max-w-lg space-y-3">
-                
-                <!-- 新增：實時匯率顯示 (深色調整) -->
-                <div id="live-rate-display" class="p-2 bg-yellow-950 border border-yellow-700 rounded-lg">
-                    <p class="text-sm font-semibold text-yellow-300 flex items-center justify-center">
-                        <i data-lucide="scan-line" class="w-4 h-4 mr-2 text-yellow-400"></i> 
-                        <span class="text-xs">當前實時匯率 (自動更新):</span>
-                        <span id="live-rate-value" class="ml-2 text-base font-extrabold text-red-400">--</span>
-                    </p>
-                </div>
-
-                <!-- 總花費顯示 (深色調整) -->
-                <div class="flex items-center justify-center space-x-3">
-                    <h2 class="text-xl font-bold text-gray-100">總花費概算</h2>
-                    <button id="toggle-currency-btn" class="text-sm px-3 py-1 bg-red-600 text-white font-medium rounded-full hover:bg-red-700 transition duration-150 transform hover:scale-105 shadow-md">
-                        切換幣別
-                    </button>
-                </div>
-                <!-- 主要顯示金額 -->
-                <p id="main-total-cost" class="text-3xl font-extrabold text-red-400 mt-2">--</p>
-                <!-- 次要顯示金額 (轉換後) -->
-                <p id="sub-total-cost" class="text-sm text-gray-400 mt-1">--</p>
-            </div>
-
+    <div id="app" class="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden">
+        <header class="bg-blue-600 text-white p-4 text-center">
+            <h1 class="text-2xl font-bold">旅程規劃 App</h1>
+            <p class="text-sm opacity-90">您的個人化行程管理器 (資料儲存在手機)</p>
         </header>
 
-        <!-- 旅程日曆分頁導航 (深色調整) -->
-        <nav class="sticky top-0 bg-gray-900/95 backdrop-blur-sm z-30 shadow-lg rounded-xl p-2 mb-6 border border-gray-700">
-            <div id="tab-container" class="flex overflow-x-auto space-x-2 pb-1">
-                <!-- Tabs will be injected here by JavaScript -->
-            </div>
-        </nav>
-
-        <!-- 行程內容區塊 -->
-        <main id="itinerary-content" class="space-y-6">
-            <!-- Itinerary items will be rendered here -->
-        </main>
-
-        <!-- 新增行程按鈕 -->
-        <div class="mt-8 text-center">
-            <button id="add-item-btn" class="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 transition duration-150 transform hover:scale-[1.01] flex items-center justify-center">
-                <i data-lucide="plus-circle" class="w-5 h-5 mr-2"></i> 新增行程項目
-            </button>
-        </div>
-
-        <!-- 新增/編輯行程表單 (模組化顯示, 深色調整) -->
-        <div id="item-form-container" class="fixed inset-0 bg-gray-900 bg-opacity-80 z-40 hidden flex items-center justify-center p-4" onclick="closeForm(event)">
-            <form id="item-form" class="bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto border border-gray-700" onclick="event.stopPropagation()">
-                <h2 class="text-2xl font-bold text-gray-100 border-b border-gray-700 pb-2"><span id="form-title">新增行程項目</span> 第 <span id="current-day-label"></span> 天</h2>
-                
-                <!-- 錯誤訊息顯示區塊 (NEW) -->
-                <div id="form-error-message" class="hidden p-3 bg-red-900 border border-red-700 text-red-300 rounded-lg" role="alert">
-                    <p id="form-error-text" class="font-medium"></p>
-                </div>
-
-                <!-- 隱藏欄位，用於儲存被編輯項目的 ID 和 DayKey -->
-                <input type="hidden" id="edit-item-id">
-                <input type="hidden" id="edit-day-key">
-
-                <!-- 行程名稱及時間 -->
-                <div class="flex space-x-3">
-                    <div class="flex-1">
-                        <!-- 這裡保留 required，因為名稱是必須的 -->
-                        <label for="activity" class="block text-sm font-medium text-gray-300">行程名稱/地點 <span class="text-red-500">*</span></label>
-                        <input type="text" id="activity" required class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
-                    </div>
-                    <div class="w-32">
-                        <label for="time" class="block text-sm font-medium text-gray-300">預計時間</label>
-                        <!-- 移除 required -->
-                        <select id="time" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
-                            <!-- Time options generated by JS -->
-                        </select>
-                    </div>
-                </div>
-
-                <!-- 交通方式 (下拉式選單) -->
-                <div>
-                    <label for="transport" class="block text-sm font-medium text-gray-300">交通方式</label>
-                    <!-- 移除 required -->
-                    <select id="transport" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
-                        <option value="步行">步行</option>
-                        <option value="計程車">計程車</option>
-                        <option value="JR">JR (日本鐵路)</option>
-                        <option value="私鐵">私鐵 (Private Rail)</option>
-                        <option value="巴士">巴士</option>
-                        <option value="飛機">飛機</option>
-                    </select>
-                </div>
-
-                <!-- 飛機專用欄位 (深色調整) -->
-                <div id="flight-inputs" class="hidden space-y-4 p-3 bg-blue-950 rounded-lg border border-blue-800">
-                    <h3 class="text-md font-semibold text-blue-300">飛機資訊</h3>
+        <div class="p-4 sm:p-6 space-y-6">
+            
+            <!-- 新增行程表單 -->
+            <div class="bg-gray-50 p-4 rounded-xl shadow-md">
+                <h2 class="text-xl font-semibold mb-3 text-gray-700">新增或編輯行程</h2>
+                <form id="tripForm" class="space-y-4">
+                    <input type="hidden" id="tripId">
                     <div>
-                        <label for="flight-number" class="block text-sm font-medium text-gray-300">班次 (Flight Number)</label>
-                        <input type="text" id="flight-number" placeholder="例如: JL001" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <label for="date" class="block text-sm font-medium text-gray-700">日期</label>
+                        <input type="date" id="date" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2">
                     </div>
-                </div>
-                
-                <!-- 交通細節欄位 (深色調整) -->
-                <div id="transit-inputs" class="space-y-4 p-3 bg-gray-700 rounded-lg border border-gray-600">
-                    <h3 class="text-md font-semibold text-gray-100">交通細節</h3>
-
-                    <!-- 起點及時間 -->
-                    <div class="flex space-x-3">
-                        <div class="flex-1">
-                            <label for="start-point" class="block text-sm font-medium text-gray-300">起點</label>
-                            <!-- 移除 required -->
-                            <input type="text" id="start-point" placeholder="輸入起點或車站名稱" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
-                        </div>
-                        <div class="w-32">
-                            <label for="start-time" class="block text-sm font-medium text-gray-300">出發時間</label>
-                            <!-- 移除 required -->
-                            <select id="start-time" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
-                                <!-- Time options generated by JS -->
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- 終點及時間 -->
-                    <div class="flex space-x-3">
-                        <div class="flex-1">
-                            <label for="end-point" class="block text-sm font-medium text-gray-300">終點</label>
-                            <!-- 移除 required -->
-                            <input type="text" id="end-point" placeholder="輸入終點或車站名稱" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
-                        </div>
-                        <div class="w-32">
-                            <label for="end-time" class="block text-sm font-medium text-gray-300">到達時間</label>
-                            <!-- 移除 required -->
-                            <select id="end-time" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
-                                <!-- Time options generated by JS -->
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Google Maps Link -->
-                <div>
-                    <label for="map-link" class="block text-sm font-medium text-gray-300">Google Map 連結 (將自動搜尋填入)</label>
-                    <input type="url" id="map-link" placeholder="貼上 Google Maps 或地點連結" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
-                </div>
-
-                <!-- 花費管理按鈕 (深色調整) -->
-                <div class="p-3 bg-red-950 rounded-lg border border-red-700 space-y-3">
-                    <h3 class="text-md font-semibold text-red-300 flex items-center mb-2">
-                        <i data-lucide="wallet" class="w-5 h-5 mr-2"></i> 花費記錄 (點擊管理細項)
-                    </h3>
-                    <button type="button" id="manage-expenses-btn" class="w-full px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-150 transform hover:scale-[1.01]">
-                        <span id="current-expense-summary">管理花費細項 (目前: 總計 JPY 0)</span>
-                    </button>
-                </div>
-
-
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="hideForm()" class="px-4 py-2 bg-gray-700 text-gray-300 font-semibold rounded-lg hover:bg-gray-600 transition">
-                        取消
-                    </button>
-                    <button type="submit" id="submit-button" class="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition">
-                        儲存行程
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- 新增花費管理模組 (Expense Manager, 深色調整) -->
-        <div id="expense-manager-container" class="fixed inset-0 bg-gray-900 bg-opacity-80 z-50 hidden flex items-center justify-center p-4" onclick="closeExpenseManager(event)">
-            <div class="bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-xl space-y-4 max-h-[90vh] overflow-y-auto border border-gray-700" onclick="event.stopPropagation()">
-                <h2 class="text-2xl font-bold text-gray-100 border-b border-gray-700 pb-2">管理花費細項 - <span id="current-expense-activity"></span></h2>
-                
-                <!-- 總計顯示 (深色調整) -->
-                <div class="p-3 bg-red-900 rounded-lg flex justify-between items-center font-bold text-red-300">
-                    <span>此行程總花費：</span>
-                    <span id="expense-item-total" class="text-xl">總計 JPY 0</span>
-                </div>
-
-                <!-- 現有花費列表 (深色調整) -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-300 mb-2">已記錄細項</h3>
-                    <ul id="expenses-list" class="space-y-2 max-h-40 overflow-y-auto pr-2">
-                        <!-- Expenses list will be rendered here -->
-                    </ul>
-                    <p id="no-expenses-message" class="text-sm text-gray-500 p-2 border border-gray-700 rounded-lg text-center mt-2 hidden">尚未記錄任何花費。</p>
-                </div>
-
-                <!-- 新增花費表單 (深色調整) -->
-                <form id="add-expense-form" class="p-3 border border-gray-600 rounded-lg space-y-3">
-                    <h3 class="text-lg font-semibold text-gray-300">新增細項花費</h3>
-                    
-                    <div class="flex space-x-3">
-                        <div class="w-1/2">
-                            <label for="new-expense-amount" class="block text-sm font-medium text-gray-300">金額</label>
-                            <input type="number" id="new-expense-amount" placeholder="0" min="1" required class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
-                        </div>
-                        <div class="w-1/2">
-                            <label for="new-expense-currency" class="block text-sm font-medium text-gray-300">幣別</label>
-                            <select id="new-expense-currency" required class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
-                                <option value="JPY">日幣 (JPY)</option>
-                                <option value="NTD">台幣 (NTD)</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <!-- 移除手動匯率輸入區塊，改為顯示自動匯率資訊 (深色調整) -->
-                    <div id="exchange-rate-info-container" class="p-2 bg-blue-950 rounded-lg border border-blue-800">
-                        <p id="auto-rate-info" class="text-xs text-blue-300 font-medium">
-                            <!-- 顯示 1 JPY = X NTD，並註明用於 NTD->JPY 轉換的匯率 -->
-                            * NTD 金額將自動使用以下匯率計算：
-                            <span class="block text-sm font-bold mt-1">1 JPY ≈ <span id="auto-rate-value-jpy-to-ntd"></span> NTD</span>
-                            <span class="block text-xs text-gray-400">(計算時使用的轉換率：1 NTD ≈ <span id="auto-rate-value-ntd-to-jpy"></span> JPY)</span>
-                        </p>
-                    </div>
-
                     <div>
-                        <label for="new-expense-description" class="block text-sm font-medium text-gray-300">用途描述 (例如: 門票, 午餐)</label>
-                        <input type="text" id="new-expense-description" placeholder="輸入描述" required class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <label for="time" class="block text-sm font-medium text-gray-700">時間 (選填)</label>
+                        <input type="time" id="time" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2">
                     </div>
-
-                    <button type="submit" class="w-full px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
-                        新增花費
-                    </button>
-                </form>
-
-                <div class="flex justify-end pt-2">
-                    <button type="button" onclick="hideExpenseManager()" class="px-4 py-2 bg-gray-700 text-gray-300 font-semibold rounded-lg hover:bg-gray-600 transition">
-                        關閉 (自動儲存)
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- *** 新增：插圖生成管理模組 (Image Manager, 深色調整, Z-Index 60) *** -->
-        <div id="image-manager-container" class="fixed inset-0 bg-gray-900 bg-opacity-90 z-60 hidden flex items-center justify-center p-4" onclick="closeImageManager(event)">
-            <div class="bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-3xl space-y-4 max-h-[95vh] overflow-y-auto border border-gray-700" onclick="event.stopPropagation()">
-                <h2 class="text-2xl font-bold text-gray-100 border-b border-gray-700 pb-2">
-                    <i data-lucide="camera" class="w-6 h-6 mr-2 inline-block align-text-bottom"></i> 
-                    為行程項目新增插圖：<span id="current-image-activity" class="text-blue-400"></span>
-                </h2>
-                
-                <!-- 輸入區域 -->
-                <div class="space-y-3">
-                    <label for="image-prompt-input" class="block text-sm font-medium text-gray-300">請輸入您想要的插圖描述 (越詳細越好)</label>
-                    <div class="flex flex-col md:flex-row gap-3">
-                        <input type="text" id="image-prompt-input" placeholder="例如：櫻花樹下的日本城堡，水墨風格"
-                               class="flex-grow p-2.5 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition">
-                        <button id="generate-image-btn" type="button" onclick="handleGenerateImage()"
-                                class="bg-blue-600 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md hover:bg-blue-700 transition duration-150 ease-in-out flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
-                            <div id="image-btn-icon" data-lucide="sparkles" class="w-5 h-5 mr-2"></div>
-                            <span id="image-btn-text">生成新插圖</span>
+                    <div>
+                        <label for="activity" class="block text-sm font-medium text-gray-700">活動/地點</label>
+                        <input type="text" id="activity" required placeholder="例如: 飯店Check-in, 淺草寺" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2">
+                    </div>
+                    <div>
+                        <label for="notes" class="block text-sm font-medium text-gray-700">備註 (選填)</label>
+                        <textarea id="notes" rows="2" placeholder="例如: 需先預約、交通方式" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"></textarea>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-xl hover:bg-blue-700 transition duration-150 shadow-lg">
+                            <span id="formButtonText">新增行程</span>
+                        </button>
+                        <button type="button" id="cancelEdit" class="w-auto bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-xl hover:bg-gray-400 transition duration-150 shadow-md hidden">
+                            取消編輯
                         </button>
                     </div>
-                </div>
+                </form>
+            </div>
 
-                <!-- 圖像預覽和狀態區域 -->
-                <div id="image-preview-area" class="min-h-[300px] max-h-[50vh] overflow-y-auto bg-gray-900 rounded-xl flex items-center justify-center p-4 border border-gray-700">
-                    <p id="image-status-message" class="text-gray-500 text-center">在此輸入描述並生成圖像，或貼上外部圖片連結。</p>
-                    <img id="preview-generated-image" class="hidden w-full h-auto object-contain rounded-lg shadow-lg" alt="生成的圖像">
-                    <!-- 載入動畫 -->
-                    <div id="image-loading-indicator" class="hidden flex flex-col items-center">
-                        <div class="loading-spinner w-8 h-8 border-4 rounded-full mb-3"></div>
-                        <p class="text-blue-500 font-medium">正在生成中，請稍候...</p>
-                    </div>
-                    <!-- 錯誤訊息容器 -->
-                    <div id="image-error-message" class="hidden bg-red-900/50 border border-red-700 text-red-400 px-4 py-3 rounded relative" role="alert">
-                        <strong class="font-bold">生成失敗！</strong>
-                        <span class="block sm:inline" id="image-error-details"></span>
-                    </div>
+            <!-- 行程列表 -->
+            <div class="space-y-4">
+                <h2 class="text-xl font-semibold text-gray-700 border-b pb-2">行程列表</h2>
+                <div id="tripList" class="space-y-3">
+                    <!-- 行程項目將在這裡動態生成 -->
+                    <p id="noTripsMessage" class="text-gray-500 text-center py-4">目前沒有行程，請新增行程。</p>
                 </div>
-                
-                <!-- 動作按鈕 -->
-                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-700">
-                    <button type="button" onclick="closeImageManager()" class="px-4 py-2 bg-gray-700 text-gray-300 font-semibold rounded-lg hover:bg-gray-600 transition">
-                        取消並保留原圖
-                    </button>
-                    <button type="button" id="save-image-btn" onclick="saveImageToItem()" disabled
-                            class="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                        <i data-lucide="save" class="w-5 h-5 mr-2 inline-block align-text-bottom"></i>
-                        儲存插圖
-                    </button>
-                    <button type="button" id="remove-image-btn" onclick="removeImageFromItem()"
-                            class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                        <i data-lucide="trash-2" class="w-5 h-5 mr-2 inline-block align-text-bottom"></i>
-                        移除插圖
-                    </button>
-                </div>
+            </div>
+
+            <!-- 輔助按鈕 -->
+            <div class="flex justify-end pt-4 border-t">
+                <button id="clearAll" class="text-sm text-red-600 hover:text-red-800 transition duration-150">
+                    清空所有行程
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 彈出式訊息框 -->
+    <div id="messageBox" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full">
+            <h3 class="text-xl font-bold mb-3 text-red-600">確認清空</h3>
+            <p class="mb-4">您確定要清空所有行程嗎？這個動作無法復原。</p>
+            <div class="flex justify-end space-x-3">
+                <button id="confirmClear" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition duration-150">
+                    確定清空
+                </button>
+                <button id="cancelClear" class="bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-150">
+                    取消
+                </button>
             </div>
         </div>
     </div>
-    
-    <!-- 載入 Firebase 函式庫 -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // 必須使用的全域變數
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let db;
-        let auth;
-        let userId = null;
-        let isAuthReady = false;
-
-        // 全域狀態：儲存所有 8 天的行程資料
-        window.itineraryData = {};
-        window.currentDay = 'day1'; // 預設在第一天
-        window.initialDataLoaded = false; // 用於確保只在沒有數據時匯入一次行程
-        window.editingItemId = null; // 用於追蹤正在編輯的行程 ID (通用)
-        window.editingDayKey = null; // 用於追蹤正在編輯的 Day Key (通用)
+    <script>
+        const form = document.getElementById('tripForm');
+        const tripList = document.getElementById('tripList');
+        const noTripsMessage = document.getElementById('noTripsMessage');
+        const clearAllButton = document.getElementById('clearAll');
+        const messageBox = document.getElementById('messageBox');
+        const confirmClearButton = document.getElementById('confirmClear');
+        const cancelClearButton = document.getElementById('cancelClear');
+        const cancelEditButton = document.getElementById('cancelEdit');
+        const formButtonText = document.getElementById('formButtonText');
         
-        // --- 匯率控制 (核心變更) ---
-        
-        // 實時匯率狀態。使用 Google 搜尋結果的當前值。
-        const JPY_TO_NTD_RATE = 0.209; // 1 JPY = X NTD (從 Google 搜尋結果獲得)
-        const NTD_TO_JPY_RATE = 1 / JPY_TO_NTD_RATE; // 1 NTD = X JPY
-        
-        // 保持 window.liveExchangeRate 變數名以確保舊的 calculateItemTotal 邏輯相容 (它需要 NTD->JPY 匯率)
-        window.liveExchangeRate = NTD_TO_JPY_RATE; 
-        window.JPY_TO_NTD_RATE = JPY_TO_NTD_RATE; // 新增 JPY->NTD 匯率供顯示
-        window.NTD_TO_JPY_RATE = NTD_TO_JPY_RATE; // 新增 NTD->JPY 匯率供顯示
-        window.rateSource = '實時匯率 (Google 搜尋結果)';
-        
-        // 全域狀態：顯示幣別
-        window.displayCurrency = 'JPY'; 
-        
-        const DATE_MAP = {
-            'day1': '12/13', 'day2': '12/14', 'day3': '12/15', 'day4': '12/16',
-            'day5': '12/17', 'day6': '12/18', 'day7': '12/19', 'day8': '12/20'
-        };
+        let editingTripId = null;
 
-        // --- API 配置與工具 (圖像生成 & Google Search) ---
-        const IMAGE_API_KEY = ""; // 留空，環境將自動提供
-        const IMAGE_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${IMAGE_API_KEY}`;
-        const GEMINI_API_KEY = ""; // 留空，環境將自動提供
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_API_KEY}`;
-        const MAX_RETRIES = 5;
-
-        // 格式化金額
-        const currencyFormatter = (amount, currencyCode) => new Intl.NumberFormat('zh-TW', {
-            style: 'currency',
-            currency: currencyCode === 'NTD' ? 'TWD' : 'JPY',
-            minimumFractionDigits: 0
-        }).format(amount);
-
-        // Find the index of an item by its unique ID
-        function findItemIndexById(dayKey, itemId) {
-            if (!window.itineraryData[dayKey]) return -1;
-            return window.itineraryData[dayKey].findIndex(item => item.id === itemId);
+        // 檢查瀏覽器是否支援 Local Storage
+        if (typeof(Storage) === "undefined") {
+            alert('抱歉，您的瀏覽器不支援本地儲存，行程將無法保存。');
         }
 
-        // 找到一個行程物件
-        function findItemById(dayKey, itemId) {
-            if (!window.itineraryData[dayKey]) return null;
-            return window.itineraryData[dayKey].find(item => item.id === itemId);
-        }
+        // --- 核心功能：讀取/保存/渲染 ---
 
-        // 產生時間下拉選單選項 (00:00 到 23:30, 每 30 分鐘)
-        function generateTimeOptions() {
-            let options = '';
-            // 增加空白選項作為預設
-            options += `<option value="" selected>-- 選擇時間 --</option>`;
-            for (let h = 0; h < 24; h++) {
-                for (let m = 0; m < 60; m += 30) {
-                    const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-                    options += `<option value="${timeStr}">${timeStr}</option>`;
-                }
-            }
-            return options;
-        }
-        
-        // 渲染實時匯率顯示 (已修改為顯示 1 JPY = X NTD)
-        function renderLiveRateDisplay() {
-            document.getElementById('live-rate-value').textContent = `1 JPY ≈ ${window.JPY_TO_NTD_RATE.toFixed(3)} NTD`;
-            document.getElementById('auto-rate-value-jpy-to-ntd').textContent = window.JPY_TO_NTD_RATE.toFixed(3);
-            document.getElementById('auto-rate-value-ntd-to-jpy').textContent = window.NTD_TO_JPY_RATE.toFixed(2);
-        }
-        
-        /**
-         * 根據行程數據，獲取視覺呈現 (優先使用自訂圖像)
-         * @param {Object} item 行程項目物件
-         * @returns {string} HTML 字串 (<img> 或 <svg>)
-         */
-        function getVisualRepresentation(item) {
-            // 1. 優先使用自訂圖像
-            if (item.imageUrl) {
-                // 將圖像尺寸固定為 128x128px, 保持一致性
-                return `<img src="${item.imageUrl}" alt="Custom Illustration for ${item.activity}" 
-                            style="width:128px; height:128px;"
-                            class="w-full h-full object-cover rounded-lg shadow-lg"
-                            onerror="this.onerror=null;this.src='https://placehold.co/128x128/374151/ffffff?text=Image+Error';">`;
-            }
-
-            // 2. 否則，使用 Lucide Icon (作為預設 fallback)
-            const transport = item.transport;
-            let iconName = 'map-pin'; // 預設圖示
-
-            switch (transport) {
-                case '步行':
-                    iconName = 'footprints';
-                    break;
-                case '計程車':
-                    iconName = 'car';
-                    break;
-                case 'JR':
-                case '私鐵':
-                    iconName = 'train';
-                    break;
-                case '巴士':
-                    iconName = 'bus';
-                    break;
-                case '飛機':
-                    iconName = 'plane';
-                    break;
-                default:
-                    iconName = 'map-pin';
-            }
-
-            return `<div class="p-3 bg-gray-700 rounded-lg text-blue-400 w-32 h-32 flex items-center justify-center">
-                        <i data-lucide="${iconName}" class="w-8 h-8"></i>
-                    </div>`;
-        }
-
-
-        // --- Firestore 數據操作 ---
-
-        /**
-         * 異步將資料儲存到 Firestore (已修改為拋出例外)
-         * @param {Object} data 欲儲存的行程資料
-         */
-        async function saveDataToFirestore(data) {
-            if (!userId) {
-                // Throw an error instead of just logging and returning
-                throw new Error("雲端帳戶未就緒，請檢查連線狀態。");
-            }
+        function getTrips() {
             try {
-                // 私人資料路徑: /artifacts/{appId}/users/{userId}/itinerary/data
-                const docRef = doc(db, 'artifacts', appId, 'users', userId, 'itinerary', 'data');
-                await setDoc(docRef, { data: JSON.stringify(data) });
+                const trips = localStorage.getItem('travelTrips');
+                return trips ? JSON.parse(trips) : [];
             } catch (error) {
-                console.error("Firestore 儲存失敗:", error);
-                // Throw a custom error message for the user
-                throw new Error(`雲端儲存失敗: ${error.message || '請檢查網路連線或權限。'}`);
-            }
-        }
-        
-        /**
-         * 顯示或隱藏行程表單中的錯誤訊息 (NEW)
-         * @param {string} message 錯誤訊息，如果為空則隱藏
-         */
-        function displayFormError(message) {
-            const errorDiv = document.getElementById('form-error-message');
-            const errorText = document.getElementById('form-error-text');
-            
-            if (message) {
-                errorText.textContent = `${message}`;
-                errorDiv.classList.remove('hidden');
-            } else {
-                errorText.textContent = '';
-                errorDiv.classList.add('hidden');
+                console.error("讀取行程失敗:", error);
+                return [];
             }
         }
 
-        // --- API Helper Function for Exponential Backoff (圖像生成 & Google Search) ---
-        /**
-         * 帶有指數退避重試的 Fetch 函式
-         */
-        async function fetchWithRetry(url, options, retries = 3) {
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.status === 429 && i < retries - 1) {
-                        const delay = Math.pow(2, i) * 1000 + Math.random() * 500;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        continue;
-                    }
-                    if (!response.ok) {
-                        throw new Error(`API returned status ${response.status}`);
-                    }
-                    return response;
-                } catch (error) {
-                    if (i === retries - 1) throw error;
-                }
-            }
-        }
-
-        // --- Google Maps 自動搜尋邏輯 (新功能) ---
-        
-        /**
-         * 透過 Google Search 尋找特定地點的 Google Maps 連結
-         * @param {string} query 景點名稱
-         * @returns {Promise<string|null>} Google Maps URL 或 null
-         */
-        async function searchGoogleForLink(query) {
-            const systemPrompt = "You are a specialized URL extractor. Given a location name, use the Google Search tool to find its official Google Maps URL. Output ONLY the URL, starting with 'https://maps.app.goo.gl/' or 'https://www.google.com/maps/'. If no direct map link is found, output nothing.";
-            
-            // 由於用戶要求是針對「成田機場」，我們增加繁體中文和英文搜索，確保準確性
-            const userQuery = `Find the Google Maps link for: ${query}. (請以 Google Maps 連結形式回覆, 必須是直接的地圖 URL)`;
-
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                tools: [{ "google_search": {} }],
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                },
-            };
-
+        function saveTrips(trips) {
             try {
-                const response = await fetchWithRetry(GEMINI_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                // 排序：先按日期，再按時間
+                trips.sort((a, b) => {
+                    if (a.date !== b.date) {
+                        return a.date.localeCompare(b.date);
+                    }
+                    // 如果日期相同，則按時間排序 (沒有時間的排前面)
+                    const timeA = a.time || '00:00';
+                    const timeB = b.time || '00:00';
+                    return timeA.localeCompare(timeB);
                 });
-                
-                const result = await response.json();
-                const text = result.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-                
-                // *** 修正: 強化連結清理邏輯 ***
-                let cleanedUrl = text;
-                if (cleanedUrl) {
-                    // 1. 移除 markdown backticks
-                    cleanedUrl = cleanedUrl.replace(/```(json|text|url)?[\s\S]*?```/g, '').trim(); 
-                    // 2. 移除可能由 LLM 加入的引號
-                    cleanedUrl = cleanedUrl.replace(/^['"]|['"]$/g, ''); 
-                    // 3. 只取第一行 (防止多行輸出)
-                    cleanedUrl = cleanedUrl.split('\n')[0].trim();
-                }
-
-                // 4. Basic validation for URL format
-                if (cleanedUrl && (cleanedUrl.startsWith('http://') || cleanedUrl.startsWith('https://'))) {
-                    // 只接受 Google Maps 相關的 URL
-                    if (cleanedUrl.includes('google.com/maps') || cleanedUrl.includes('maps.app.goo.gl')) {
-                        return cleanedUrl;
-                    }
-                }
-                return null;
-
+                localStorage.setItem('travelTrips', JSON.stringify(trips));
             } catch (error) {
-                console.error("Google Maps 搜尋 API 呼叫失敗:", error);
-                return null;
+                console.error("保存行程失敗:", error);
             }
         }
-        
-        /**
-         * 自動填入 Google Maps 連結到表單
-         * @param {string} activity 景點/活動名稱
-         */
-        async function autoPopulateMapLink(activity) {
-            const mapLinkInput = document.getElementById('map-link');
-            const originalPlaceholder = "貼上 Google Maps 或地點連結";
-            
-            // 如果地圖連結欄位已經有值，則不做自動搜尋
-            if (mapLinkInput.value.trim()) return; 
-            
-            // 如果景點名稱是空的，也不搜尋
-            if (!activity) return;
 
-            mapLinkInput.placeholder = "正在自動搜尋 Google Maps 連結...";
+        function renderTrips() {
+            const trips = getTrips();
+            tripList.innerHTML = '';
             
-            try {
-                const url = await searchGoogleForLink(activity);
-                if (url) {
-                    mapLinkInput.value = url;
-                    mapLinkInput.placeholder = "已自動填入 Google Maps 連結！";
-                } else {
-                    mapLinkInput.placeholder = "找不到 Google Maps 連結。請手動輸入。";
-                }
-            } catch (error) {
-                // 忽略錯誤，僅重置 placeholder
-                mapLinkInput.placeholder = "搜尋失敗。請手動輸入。";
-            }
-            
-            // 幾秒後重置 Placeholder
-            setTimeout(() => {
-                mapLinkInput.placeholder = originalPlaceholder;
-            }, 3000);
-        }
-
-        // 為 activity 輸入欄位添加失去焦點事件，觸發自動搜尋 (關鍵實作)
-        document.addEventListener('DOMContentLoaded', () => {
-             const activityInput = document.getElementById('activity');
-             if (activityInput) {
-                // This triggers the map link search when the user moves out of the activity name field
-                activityInput.onblur = function() {
-                    const activity = this.value.trim();
-                    // Only trigger auto-search if we are adding a new item or if the mapLink is currently empty for an edited item
-                    const isNewItem = !document.getElementById('edit-item-id').value;
-                    const mapLinkEmpty = !document.getElementById('map-link').value.trim();
-                    if (activity && (isNewItem || mapLinkEmpty)) {
-                        autoPopulateMapLink(activity);
-                    }
-                };
-             }
-        });
-
-        // -----------------------------------------------------------
-        // --- UI 渲染與主要邏輯 (其餘部分與原程式碼相同) ---
-        // -----------------------------------------------------------
-
-        /**
-         * 渲染單個行程項目卡片
-         * @param {Object} item 行程項目
-         * @param {string} dayKey 日期鍵 (e.g., 'day1')
-         * @returns {string} 行程卡片的 HTML 字串
-         */
-        function renderItem(item, dayKey) {
-            const totalCostJPY = calculateItemTotal(item.expenses || [], 'JPY');
-            const totalCostDisplay = currencyFormatter(totalCostJPY, 'JPY');
-            
-            // 取得視覺呈現
-            const visualHtml = getVisualRepresentation(item);
-            
-            // *** 修正: 確保地圖連結使用 target="_blank" 和 rel="noopener noreferrer" ***
-            let activityHtml;
-            if (item.mapLink) {
-                // 如果 mapLink 存在，將活動名稱設為地圖連結 (滿足用戶需求)
-                activityHtml = `
-                    <a href="${item.mapLink}" target="_blank" rel="noopener noreferrer" class="text-xl font-bold text-gray-100 activity-link cursor-pointer hover:text-blue-400 transition" title="點擊前往 Google 地圖">
-                        ${item.activity}
-                    </a>
-                `;
-            } else {
-                // 如果沒有 mapLink，點擊活動名稱則開啟編輯表單 (原行為)
-                activityHtml = `
-                    <h3 class="text-xl font-bold text-gray-100 activity-link cursor-pointer" onclick="openForm('${dayKey}', '${item.id}')" title="點擊編輯行程">
-                        ${item.activity}
-                    </h3>
-                `;
+            if (trips.length === 0) {
+                noTripsMessage.classList.remove('hidden');
+                clearAllButton.classList.add('hidden');
+                return;
             }
 
-            return `
-                <div id="item-${item.id}" class="bg-gray-800 p-4 md:p-6 rounded-xl shadow-xl border border-gray-700 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 transition hover:bg-gray-700/50">
-                    
-                    <!-- 左側: 視覺圖示/插圖 (固定寬高以保持卡片穩定) -->
-                    <div class="flex-shrink-0 w-32 h-32 flex items-center justify-center bg-gray-900 rounded-lg">
-                        ${visualHtml}
-                    </div>
+            noTripsMessage.classList.add('hidden');
+            clearAllButton.classList.remove('hidden');
 
-                    <!-- 中間: 行程詳情 -->
-                    <div class="flex-grow">
-                        <!-- 時間與名稱 -->
-                        <div class="flex items-center space-x-3 mb-2 border-b border-gray-700 pb-2">
-                            <span class="text-xl font-extrabold text-red-400">${item.time}</span>
-                            ${activityHtml}
-                            <span class="text-xs font-medium px-2 py-0.5 bg-blue-700 rounded-full text-blue-200">${item.transport}</span>
-                        </div>
-                        
-                        <!-- 交通細節 -->
-                        <p class="text-sm text-gray-400 mb-2">
-                            ${item.startPoint || '未定'} 
-                            <i data-lucide="arrow-right" class="w-4 h-4 inline-block mx-1"></i> 
-                            ${item.endPoint || '未定'} 
-                            <span class="text-xs ml-2">(${item.startTime || '--'} ~ ${item.endTime || '--'})</span>
-                        </p>
+            let currentGroup = '';
 
-                        <!-- 連結與花費 -->
-                        <div class="flex flex-wrap items-center gap-3 mt-3">
-                            <!-- 確保地圖連結使用 target="_blank" 和 rel="noopener noreferrer" -->
-                            ${item.mapLink ? `<a href="${item.mapLink}" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-blue-400 hover:text-blue-300 flex items-center">
-                                <i data-lucide="map" class="w-4 h-4 mr-1"></i> 地圖連結
-                            </a>` : ''}
-                            
-                            <!-- 花費顯示 -->
-                            <span class="text-sm font-semibold text-red-400 flex items-center">
-                                <i data-lucide="yen-sign" class="w-4 h-4 mr-1"></i> 花費: ${totalCostDisplay}
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <!-- 右側: 編輯與刪除按鈕 -->
-                    <div class="flex-shrink-0 flex flex-row md:flex-col space-x-2 md:space-x-0 md:space-y-2 justify-end">
-                        <button onclick="openImageManager('${dayKey}', '${item.id}', '${item.activity}')" title="${item.imageUrl ? '修改插圖' : '新增插圖'}" class="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
-                            <i data-lucide="image" class="w-5 h-5"></i>
-                        </button>
-                        <button onclick="openForm('${dayKey}', '${item.id}')" title="編輯行程" class="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                            <i data-lucide="pencil" class="w-5 h-5"></i>
-                        </button>
-                        <button onclick="deleteItem('${dayKey}', '${item.id}')" title="刪除行程" class="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-                            <i data-lucide="trash-2" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        // --- 圖像生成功能 (未變更) ---
-
-        /**
-         * 異步生成圖像並處理重試
-         * @param {string} prompt 用於生成圖像的描述 (英文/中文)
-         * @returns {Promise<string>} base64 圖像 URL
-         */
-        async function generateImageWithRetry(prompt) {
-            const payload = {
-                instances: [{ prompt: prompt }],
-                parameters: { "sampleCount": 1 }
-            };
-
-            for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
-                try {
-                    const response = await fetchWithRetry(IMAGE_API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
+            trips.forEach(trip => {
+                // 日期分組顯示
+                if (trip.date !== currentGroup) {
+                    currentGroup = trip.date;
+                    const dateHeader = document.createElement('h3');
+                    const formattedDate = new Date(trip.date).toLocaleDateString('zh-TW', {
+                        month: 'long', 
+                        day: 'numeric', 
+                        weekday: 'short'
                     });
-
-                    // 這裡不再需要 429 處理，因為它在 fetchWithRetry 中處理
-                    if (!response.ok) {
-                        const errorJson = await response.json();
-                        throw new Error(`HTTP 錯誤 ${response.status}: ${errorJson.error.message || '未知錯誤'}`);
-                    }
-
-                    const result = await response.json();
-                    const base64Data = result.predictions?.[0]?.bytesBase64Encoded;
-
-                    if (!base64Data) {
-                        throw new Error('API 回應中缺少圖像數據。');
-                    }
-
-                    return `data:image/png;base64,${base64Data}`;
-
-                } catch (error) {
-                    console.error(`嘗試 ${attempt + 1} 失敗:`, error);
-                    if (attempt === MAX_RETRIES - 1) {
-                        // 最後一次嘗試失敗，拋出錯誤
-                        throw error;
-                    }
-                    const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
-                    await new Promise(resolve => setTimeout(resolve, delay));
+                    dateHeader.className = 'text-lg font-bold text-blue-700 mt-4 mb-2 border-l-4 border-blue-500 pl-3 pt-1 pb-1 bg-blue-50/50 rounded-md shadow-sm';
+                    dateHeader.textContent = formattedDate;
+                    tripList.appendChild(dateHeader);
                 }
-            }
-            throw new Error('經過多次重試後，仍無法生成圖像。');
-        }
 
-        // --- 圖像管理 UI 邏輯 (未變更) ---
-
-        const imageManagerContainer = document.getElementById('image-manager-container');
-        const imageStatusMessage = document.getElementById('image-status-message');
-        const previewGeneratedImage = document.getElementById('preview-generated-image');
-        const imageLoadingIndicator = document.getElementById('image-loading-indicator');
-        const imageErrorMessage = document.getElementById('image-error-message');
-        const imageErrorDetails = document.getElementById('image-error-details');
-        const imagePromptInput = document.getElementById('image-prompt-input');
-        const generateImageBtn = document.getElementById('generate-image-btn');
-        const saveImageBtn = document.getElementById('save-image-btn');
-        const removeImageBtn = document.getElementById('remove-image-btn');
-        const currentImageActivity = document.getElementById('current-image-activity');
-        const imageBtnText = document.getElementById('image-btn-text');
-
-        /**
-         * 顯示/隱藏圖像生成器的狀態
-         * @param {string} state 'loading', 'error', 'image', or 'ready'
-         * @param {string} [data] 圖像 URL 或錯誤訊息
-         */
-        function updateImageUI(state, data = '') {
-            imageLoadingIndicator.classList.add('hidden');
-            previewGeneratedImage.classList.add('hidden');
-            imageStatusMessage.classList.add('hidden');
-            imageErrorMessage.classList.add('hidden');
-            generateImageBtn.disabled = false;
-            saveImageBtn.disabled = true; // 預設禁用儲存按鈕
-            imageBtnText.textContent = '生成新插圖';
-            
-            // 重置預覽圖像的 src (避免顯示舊圖)
-            if (state !== 'image') {
-                previewGeneratedImage.src = '';
-            }
-
-            switch (state) {
-                case 'loading':
-                    imageLoadingIndicator.classList.remove('hidden');
-                    generateImageBtn.disabled = true;
-                    imageBtnText.textContent = '生成中...';
-                    imageStatusMessage.classList.remove('hidden');
-                    imageStatusMessage.textContent = '正在呼叫 AI 模型，請稍候...';
-                    break;
-                case 'error':
-                    imageErrorMessage.classList.remove('hidden');
-                    imageErrorDetails.textContent = data;
-                    imageStatusMessage.classList.remove('hidden');
-                    imageStatusMessage.textContent = '生成失敗，請檢查描述或稍後再試。';
-                    break;
-                case 'image':
-                    previewGeneratedImage.src = data;
-                    previewGeneratedImage.classList.remove('hidden');
-                    saveImageBtn.disabled = false; // 成功生成後啟用儲存按鈕
-                    imageStatusMessage.classList.add('hidden');
-                    break;
-                case 'ready':
-                default:
-                    imageStatusMessage.classList.remove('hidden');
-                    imageStatusMessage.textContent = '輸入您的描述，然後點擊「生成新插圖」。';
-                    break;
-            }
-        }
-
-        /**
-         * 開啟圖像管理彈出視窗
-         * @param {string} dayKey 日期鍵
-         * @param {string} itemId 行程 ID
-         * @param {string} activityName 行程名稱 (用於標題顯示)
-         */
-        window.openImageManager = function(dayKey, itemId, activityName) {
-            window.editingDayKey = dayKey;
-            window.editingItemId = itemId;
-
-            const item = findItemById(dayKey, itemId);
-            if (!item) return;
-
-            // 設置標題
-            currentImageActivity.textContent = activityName;
-            
-            // 設置 Prompt 初始值 (使用 activity name)
-            imagePromptInput.value = item.activity; 
-            
-            // 處理現有圖像
-            if (item.imageUrl) {
-                updateImageUI('image', item.imageUrl);
-                removeImageBtn.disabled = false;
-            } else {
-                updateImageUI('ready');
-                removeImageBtn.disabled = true;
-            }
-            
-            // 顯示模組
-            imageManagerContainer.classList.remove('hidden');
-            lucide.createIcons(); // 重新渲染 Lucide 圖示
-        }
-
-        /**
-         * 閉圖像管理彈出視窗
-         */
-        window.closeImageManager = function(event) {
-            if (event && event.target !== imageManagerContainer) return;
-            imageManagerContainer.classList.add('hidden');
-            window.editingDayKey = null;
-            window.editingItemId = null;
-            // 清除狀態
-            updateImageUI('ready');
-        }
-
-        /**
-         * 處理圖像生成按鈕點擊
-         */
-        window.handleGenerateImage = async function() {
-            const prompt = imagePromptInput.value.trim();
-
-            if (!prompt) {
-                updateImageUI('error', '請輸入描述以生成插圖！');
-                return;
-            }
-
-            updateImageUI('loading');
-
-            try {
-                const imageUrl = await generateImageWithRetry(prompt);
-                updateImageUI('image', imageUrl);
-            } catch (error) {
-                console.error("生成圖像時發生最終錯誤:", error);
-                updateImageUI('error', error.message || '無法連接到圖像生成服務。');
-            }
-        }
-
-        /**
-         * 將預覽的圖像 URL 儲存到行程項目中
-         */
-        window.saveImageToItem = function() {
-            const dayKey = window.editingDayKey;
-            const itemId = window.editingItemId;
-            const imageUrl = previewGeneratedImage.src;
-
-            if (!dayKey || !itemId || !imageUrl || saveImageBtn.disabled) return;
-            
-            const item = findItemById(dayKey, itemId);
-            if (!item) return;
-
-            item.imageUrl = imageUrl;
-            
-            // 儲存到 Firestore 並更新 UI
-            saveDataToFirestore(window.itineraryData);
-            renderItinerary(dayKey); 
-            
-            // 關閉模組
-            closeImageManager();
-        }
-
-        /**
-         * 從行程項目中移除圖像
-         */
-        window.removeImageFromItem = function() {
-            const dayKey = window.editingDayKey;
-            const itemId = window.editingItemId;
-
-            if (!dayKey || !itemId) return;
-            
-            const item = findItemById(dayKey, itemId);
-            if (!item) return;
-
-            delete item.imageUrl;
-            
-            // 儲存到 Firestore 並更新 UI
-            saveDataToFirestore(window.itineraryData);
-            renderItinerary(dayKey);
-            
-            // 關閉模組
-            closeImageManager();
-        }
-
-        
-        // --- 匯率和總花費計算 (未變更) ---
-        
-        /**
-         * 計算單個行程項目花費總額 (轉換為 JPY)
-         * @param {Array<Object>} expenses 花費細項陣列
-         * @param {string} targetCurrency 目標幣別 ('JPY' 或 'NTD')
-         * @returns {number} 轉換後的總金額
-         */
-        function calculateItemTotal(expenses, targetCurrency = 'JPY') {
-            const NTD_TO_JPY = window.liveExchangeRate; // 1 NTD = X JPY
-            const JPY_TO_NTD = window.JPY_TO_NTD_RATE; // 1 JPY = X NTD
-            
-            let totalJPY = 0;
-
-            expenses.forEach(expense => {
-                let amount = expense.amount;
-                if (expense.currency === 'NTD') {
-                    // 將 NTD 轉換為 JPY
-                    totalJPY += amount * NTD_TO_JPY;
-                } else {
-                    // JPY 直接加
-                    totalJPY += amount;
-                }
-            });
-            
-            if (targetCurrency === 'NTD') {
-                // 如果目標是 NTD，則將 JPY 總額轉換為 NTD
-                return totalJPY * JPY_TO_NTD;
-            }
-
-            return totalJPY; // 預設返回 JPY 總額
-        }
-
-        /**
-         * 計算所有行程的總花費
-         * @returns {Object} 包含 JPY 和 NTD 總額
-         */
-        function calculateTotalCost() {
-            let totalJPY = 0;
-            for (const dayKey in window.itineraryData) {
-                window.itineraryData[dayKey].forEach(item => {
-                    totalJPY += calculateItemTotal(item.expenses || [], 'JPY');
-                });
-            }
-            
-            // 根據匯率轉換為 NTD
-            const totalNTD = totalJPY * window.JPY_TO_NTD_RATE;
-
-            return { totalJPY: Math.round(totalJPY), totalNTD: Math.round(totalNTD) };
-        }
-
-        /**
-         * 渲染總花費儀表板
-         */
-        function renderTotalCost() {
-            const { totalJPY, totalNTD } = calculateTotalCost();
-
-            const mainElement = document.getElementById('main-total-cost');
-            const subElement = document.getElementById('sub-total-cost');
-            const toggleBtn = document.getElementById('toggle-currency-btn');
-
-            let mainAmount, mainCurrency, subAmount, subCurrency;
-
-            if (window.displayCurrency === 'JPY') {
-                mainAmount = totalJPY;
-                mainCurrency = 'JPY';
-                subAmount = totalNTD;
-                subCurrency = 'NTD';
-            } else {
-                mainAmount = totalNTD;
-                mainCurrency = 'NTD';
-                subAmount = totalJPY;
-                subCurrency = 'JPY';
-            }
-
-            mainElement.textContent = currencyFormatter(mainAmount, mainCurrency);
-            subElement.textContent = `(約 ${currencyFormatter(subAmount, subCurrency)})`;
-            toggleBtn.textContent = `切換到 ${subCurrency}`;
-            
-            // 重新渲染當前顯示日期的花費小結 (影響 ItemForm)
-            const item = findItemById(window.editingDayKey, window.editingItemId);
-            if (item) {
-                const itemTotalJPY = calculateItemTotal(item.expenses || [], 'JPY');
-                document.getElementById('current-expense-summary').textContent = `管理花費細項 (目前: 總計 ${currencyFormatter(itemTotalJPY, 'JPY')})`;
-            }
-        }
-        
-        /**
-         * 切換顯示的幣別
-         */
-        document.getElementById('toggle-currency-btn').onclick = function() {
-            window.displayCurrency = window.displayCurrency === 'JPY' ? 'NTD' : 'JPY';
-            renderTotalCost();
-        };
-        
-        // --- Tab 切換與初始化 (未變更) ---
-
-        /**
-         * 切換日曆分頁
-         * @param {string} dayKey 目標日期鍵
-         */
-        window.switchTab = function(dayKey) {
-            window.currentDay = dayKey;
-            
-            // 更新 Tab 樣式
-            document.querySelectorAll('#tab-container button').forEach(btn => {
-                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-inner');
-                btn.classList.add('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600');
-            });
-            const activeBtn = document.getElementById(`tab-${dayKey}`);
-            activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-inner');
-            activeBtn.classList.remove('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600');
-
-            // 渲染行程內容
-            renderItinerary(dayKey);
-        }
-
-        /**
-         * 建立日曆分頁導航
-         */
-        function setupTabs() {
-            const tabContainer = document.getElementById('tab-container');
-            tabContainer.innerHTML = '';
-            
-            Object.keys(DATE_MAP).forEach((dayKey, index) => {
-                const dayText = `D${index + 1} (${DATE_MAP[dayKey]})`;
-                const isActive = dayKey === window.currentDay;
+                // 行程卡片
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 rounded-xl shadow-lg border-l-4 border-blue-500 flex justify-between items-center transition duration-150 hover:shadow-xl';
                 
-                const button = document.createElement('button');
-                button.id = `tab-${dayKey}`;
-                button.textContent = dayText;
-                button.className = `flex-shrink-0 px-4 py-2 text-sm font-semibold rounded-lg transition duration-150 transform hover:scale-[1.02] 
-                                    ${isActive ? 'bg-blue-600 text-white shadow-inner' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`;
-                button.onclick = () => window.switchTab(dayKey);
+                const content = document.createElement('div');
+                content.className = 'flex-grow min-w-0';
+
+                const timeActivity = document.createElement('p');
+                timeActivity.className = 'text-lg font-semibold text-gray-900 truncate';
+                const displayTime = trip.time ? trip.time + ' - ' : '';
+                timeActivity.textContent = `${displayTime}${trip.activity}`;
                 
-                tabContainer.appendChild(button);
+                const notes = document.createElement('p');
+                notes.className = 'text-sm text-gray-500 mt-1 break-words';
+                notes.textContent = trip.notes || '無備註';
+                
+                content.appendChild(timeActivity);
+                content.appendChild(notes);
+
+                // 操作按鈕區
+                const actions = document.createElement('div');
+                actions.className = 'flex space-x-2 ml-4 flex-shrink-0';
+                
+                const editButton = document.createElement('button');
+                editButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600 hover:text-yellow-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-7 1l4-4m-4 4l5-5m-5 5h.01M15 5l2 2m-2-2L13 7l-2 2"/></svg>';
+                editButton.title = '編輯';
+                editButton.onclick = () => startEdit(trip.id);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.86 12.35A2 2 0 0116.14 21H7.86a2 2 0 01-1.99-1.65L5 7m4 0V5a2 2 0 012-2h2a2 2 0 012 2v2m-6 0h6"/></svg>';
+                deleteButton.title = '刪除';
+                deleteButton.onclick = () => deleteTrip(trip.id);
+
+                actions.appendChild(editButton);
+                actions.appendChild(deleteButton);
+
+                card.appendChild(content);
+                card.appendChild(actions);
+                tripList.appendChild(card);
             });
         }
 
-        /**
-         * 渲染特定日期的行程內容
-         * @param {string} dayKey 日期鍵
-         */
-        function renderItinerary(dayKey) {
-            const content = document.getElementById('itinerary-content');
-            const items = window.itineraryData[dayKey] || [];
+        // --- 事件處理器 ---
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const activity = document.getElementById('activity').value;
+            const notes = document.getElementById('notes').value;
             
-            if (items.length === 0) {
-                content.innerHTML = `<div class="p-8 text-center bg-gray-800 rounded-xl border-2 border-dashed border-gray-700">
-                    <i data-lucide="sun-off" class="w-10 h-10 text-gray-500 mx-auto mb-3"></i>
-                    <p class="text-gray-400 font-semibold">這一天還沒有安排行程。點擊「新增行程項目」開始規劃！</p>
-                </div>`;
-            } else {
-                // 依時間排序
-                items.sort((a, b) => a.time.localeCompare(b.time));
-                
-                content.innerHTML = items.map(item => renderItem(item, dayKey)).join('');
-            }
+            let trips = getTrips();
             
-            // 重新渲染 Lucide 圖示 (包括新加入的 image/pencil/trash)
-            lucide.createIcons();
-            
-            // 每次渲染行程內容後，更新總花費
-            renderTotalCost();
-        }
-
-        /**
-         * 載入預設資料 (如果 Firestore 中沒有資料)
-         */
-        function loadDefaultData() {
-            if (window.initialDataLoaded) return;
-            
-            window.itineraryData = {
-                'day1': [
-                    // mapLink 存在，點擊活動名稱會跳轉到地圖 (已包含在預設數據中)
-                    { id: crypto.randomUUID(), time: '09:00', activity: '抵達東京成田機場 (NRT)', transport: '飛機', mapLink: 'https://maps.app.goo.gl/hBwZ9W7W6s7Kx2vM8', startPoint: '台灣桃園 (TPE)', startTime: '06:30', endPoint: '成田 (NRT)', endTime: '09:00', flightNumber: 'JL802', expenses: [{id: crypto.randomUUID(), amount: 15000, currency: 'NTD', description: '機票費用'}], imageUrl: null },
-                    // mapLink 存在，點擊活動名稱會跳轉到地圖
-                    { id: crypto.randomUUID(), time: '11:00', activity: '搭乘 Narita Express 前往新宿', transport: 'JR', mapLink: 'https://maps.app.goo.gl/35FwJb7L1T8Fq2P17', startPoint: 'NRT', startTime: '10:30', endPoint: '新宿', endTime: '12:00', expenses: [{id: crypto.randomUUID(), amount: 3200, currency: 'JPY', description: 'NEX 車票'}], imageUrl: null },
-                    // mapLink 存在，點擊活動名稱會跳轉到地圖
-                    { id: crypto.randomUUID(), time: '13:00', activity: '午餐：一蘭拉麵 (新宿中央東口)', transport: '步行', mapLink: 'https://maps.app.goo.gl/yZ82GkE7wP89g2A48', startPoint: '飯店', startTime: '12:45', endPoint: '一蘭', endTime: '13:00', expenses: [{id: crypto.randomUUID(), amount: 1200, currency: 'JPY', description: '拉麵'}], imageUrl: null }
-                ],
-                'day2': [
-                    // mapLink 存在，點擊活動名稱會跳轉到地圖
-                    { id: crypto.randomUUID(), time: '09:30', activity: '淺草寺參拜', transport: '私鐵', mapLink: 'https://maps.app.goo.gl/3hF6K8zP9x2XzBqD6', startPoint: '新宿', startTime: '09:00', endPoint: '淺草', endTime: '09:30', expenses: [], imageUrl: null },
-                    // mapLink 不存在，點擊活動名稱會開啟編輯表單
-                    { id: crypto.randomUUID(), time: '12:00', activity: '仲見世通小吃', transport: '步行', mapLink: '', startPoint: '淺草寺', startTime: '12:00', endPoint: '仲見世通', endTime: '12:30', expenses: [], imageUrl: null }
-                ],
-                'day3': [], 'day4': [], 'day5': [], 'day6': [], 'day7': [], 'day8': []
-            };
-            window.initialDataLoaded = true;
-            setupTabs();
-            renderItinerary(window.currentDay);
-            saveDataToFirestore(window.itineraryData); // 儲存預設資料
-        }
-
-
-        // --- 表單邏輯 ---
-
-        /**
-         * 刪除行程項目
-         * @param {string} dayKey 日期鍵
-         * @param {string} itemId 行程 ID
-         */
-        window.deleteItem = function(dayKey, itemId) {
-            // 由於不能使用 alert/confirm，我們暫時使用 console 提示
-            console.log(`[系統提示] 刪除行程 ${itemId} 必須經過使用者確認。 (此處已略過彈窗確認，直接刪除)`);
-            
-            const index = findItemIndexById(dayKey, itemId);
-            if (index !== -1) {
-                window.itineraryData[dayKey].splice(index, 1);
-                saveDataToFirestore(window.itineraryData);
-                renderItinerary(dayKey);
-            }
-        };
-        
-        // 重新實現 openForm
-        window.openForm = function(dayKey, itemId = null) {
-            window.editingDayKey = dayKey;
-            window.editingItemId = itemId;
-            document.getElementById('edit-day-key').value = dayKey;
-            document.getElementById('edit-item-id').value = itemId || '';
-            document.getElementById('current-day-label').textContent = dayKey.replace('day', '');
-
-            // 清空表單
-            document.getElementById('item-form').reset();
-            document.getElementById('form-title').textContent = itemId ? '編輯行程項目' : '新增行程項目';
-            document.getElementById('submit-button').textContent = itemId ? '更新行程' : '儲存行程';
-            
-            // 清除錯誤訊息
-            displayFormError('');
-
-            // 確保所有時間選單都有選項
-            const timeOptions = generateTimeOptions();
-            document.getElementById('time').innerHTML = timeOptions;
-            document.getElementById('start-time').innerHTML = timeOptions;
-            document.getElementById('end-time').innerHTML = timeOptions;
-
-            let item = null;
-            if (itemId) {
-                item = findItemById(dayKey, itemId);
-            }
-
-            if (item) {
-                // 載入編輯數據
-                document.getElementById('activity').value = item.activity || '';
-                document.getElementById('time').value = item.time || '';
-                document.getElementById('transport').value = item.transport || '步行';
-                document.getElementById('map-link').value = item.mapLink || '';
-
-                // 交通細節
-                document.getElementById('start-point').value = item.startPoint || '';
-                document.getElementById('start-time').value = item.startTime || '';
-                document.getElementById('end-point').value = item.endPoint || '';
-                document.getElementById('end-time').value = item.endTime || '';
-
-                // 飛機細節
-                document.getElementById('flight-number').value = item.flightNumber || '';
-                
-                // 更新花費摘要
-                const itemTotalJPY = calculateItemTotal(item.expenses || [], 'JPY');
-                document.getElementById('current-expense-summary').textContent = `管理花費細項 (目前: 總計 ${currencyFormatter(itemTotalJPY, 'JPY')})`;
-
-            } else {
-                 // 新增時，確保花費摘要為 0
-                 document.getElementById('current-expense-summary').textContent = `管理花費細項 (目前: 總計 JPY 0)`;
-                 // 清空地圖連結欄位的提示文字，以便讓 onblur 觸發自動搜尋
-                 document.getElementById('map-link').placeholder = "貼上 Google Maps 或地點連結";
-            }
-            
-            // 觸發交通方式變更以顯示/隱藏飛機或交通細節
-            document.getElementById('transport').dispatchEvent(new Event('change'));
-
-            document.getElementById('item-form-container').classList.remove('hidden');
-        };
-
-        window.hideForm = function() {
-            document.getElementById('item-form-container').classList.add('hidden');
-            window.editingDayKey = null;
-            window.editingItemId = null;
-            // 關閉時清除錯誤訊息
-            displayFormError(''); 
-        };
-
-        document.getElementById('item-form').onsubmit = async function(event) {
-            event.preventDefault();
-            
-            // 1. 清除舊的錯誤訊息
-            displayFormError(''); 
-
-            const dayKey = document.getElementById('edit-day-key').value;
-            const itemId = document.getElementById('edit-item-id').value;
-
-            const isEditing = !!itemId;
-            let item = isEditing ? findItemById(dayKey, itemId) : null;
-            
-            const transportValue = document.getElementById('transport').value;
-
-            const newItem = {
-                id: itemId || crypto.randomUUID(),
-                time: document.getElementById('time').value,
-                activity: document.getElementById('activity').value,
-                transport: transportValue,
-                mapLink: document.getElementById('map-link').value,
-                
-                // 交通/飛機細節 (根據交通方式儲存)
-                startPoint: transportValue !== '步行' ? document.getElementById('start-point').value : '',
-                startTime: transportValue !== '步行' ? document.getElementById('start-time').value : '',
-                endPoint: transportValue !== '步行' ? document.getElementById('end-point').value : '',
-                endTime: transportValue !== '步行' ? document.getElementById('end-time').value : '',
-                flightNumber: transportValue === '飛機' ? document.getElementById('flight-number').value : '',
-                
-                // 費用和圖片應繼承現有數據
-                expenses: item ? item.expenses : [],
-                imageUrl: item ? item.imageUrl : null,
-            };
-
-            // 2. 執行儲存並捕獲錯誤
-            try {
-                if (isEditing) {
-                    // 更新現有項目
-                    const index = findItemIndexById(dayKey, itemId);
-                    if (index !== -1) {
-                        window.itineraryData[dayKey][index] = newItem;
-                    }
-                } else {
-                    // 新增項目
-                    if (!window.itineraryData[dayKey]) {
-                        window.itineraryData[dayKey] = [];
-                    }
-                    window.itineraryData[dayKey].push(newItem);
+            if (editingTripId) {
+                // 編輯現有行程
+                const index = trips.findIndex(t => t.id === editingTripId);
+                if (index !== -1) {
+                    trips[index] = { ...trips[index], date, time, activity, notes };
                 }
-
-                await saveDataToFirestore(window.itineraryData);
-                
-                // 儲存成功
-                renderItinerary(dayKey);
-                window.hideForm();
-                
-            } catch (error) {
-                // 儲存失敗，顯示錯誤訊息
-                displayFormError(error.message || '儲存行程時發生未知錯誤。');
-            }
-        };
-
-        // 交通方式變更處理
-        document.getElementById('transport').addEventListener('change', (e) => {
-            const transport = e.target.value;
-            const flightInputs = document.getElementById('flight-inputs');
-            const transitInputs = document.getElementById('transit-inputs');
-            
-            // 飛機
-            if (transport === '飛機') {
-                flightInputs.classList.remove('hidden');
-                transitInputs.classList.remove('hidden');
+                editingTripId = null;
+                formButtonText.textContent = '新增行程';
+                cancelEditButton.classList.add('hidden');
             } else {
-                flightInputs.classList.add('hidden');
+                // 新增行程
+                const newTrip = {
+                    id: Date.now(), // 使用時間戳作為唯一 ID
+                    date,
+                    time,
+                    activity,
+                    notes
+                };
+                trips.push(newTrip);
             }
-            
-            // 步行
-            if (transport === '步行') {
-                transitInputs.classList.add('hidden');
-            } else if (transport !== '飛機') {
-                // 其他交通工具
-                transitInputs.classList.remove('hidden');
-            }
+
+            saveTrips(trips);
+            form.reset();
+            renderTrips();
         });
 
-        // 新增行程按鈕
-        document.getElementById('add-item-btn').onclick = () => {
-            window.openForm(window.currentDay);
-        };
-        
-        // --- 費用管理邏輯 (未變更) ---
-        
-        window.openExpenseManager = function(dayKey, itemId) {
-            window.editingDayKey = dayKey;
-            window.editingItemId = itemId;
+        function startEdit(id) {
+            const trips = getTrips();
+            const tripToEdit = trips.find(t => t.id === id);
             
-            const item = findItemById(dayKey, itemId);
-            if (!item) return;
-
-            // 設置標題和匯率資訊
-            document.getElementById('current-expense-activity').textContent = item.activity;
-            renderLiveRateDisplay(); 
-
-            // 渲染現有花費
-            renderExpensesList(item.expenses || []);
-
-            document.getElementById('expense-manager-container').classList.remove('hidden');
-        };
-        
-        window.closeExpenseManager = function(event) {
-            if (event && event.target !== document.getElementById('expense-manager-container')) return;
-            document.getElementById('expense-manager-container').classList.add('hidden');
-            
-            // 花費修改已經在 renderExpensesList/deleteExpense 中保存到 Firestore
-            window.editingDayKey = null;
-            window.editingItemId = null;
-        };
-        
-        document.getElementById('manage-expenses-btn').onclick = (e) => {
-            e.preventDefault();
-            const dayKey = document.getElementById('edit-day-key').value;
-            const itemId = document.getElementById('edit-item-id').value;
-            window.openExpenseManager(dayKey, itemId);
-        };
-
-        function renderExpensesList(expenses) {
-            const list = document.getElementById('expenses-list');
-            const noExpensesMsg = document.getElementById('no-expenses-message');
-            list.innerHTML = '';
-            
-            if (expenses.length === 0) {
-                noExpensesMsg.classList.remove('hidden');
-            } else {
-                noExpensesMsg.classList.add('hidden');
-                expenses.forEach(expense => {
-                    const listItem = document.createElement('li');
-                    listItem.id = `expense-${expense.id}`;
-                    listItem.className = 'flex justify-between items-center p-3 bg-gray-700 rounded-lg border border-gray-600';
-                    
-                    const amountDisplay = currencyFormatter(expense.amount, expense.currency);
-
-                    listItem.innerHTML = `
-                        <span class="text-gray-300">
-                            ${expense.description}
-                        </span>
-                        <div class="flex items-center space-x-3">
-                            <span class="font-semibold text-red-300">${amountDisplay}</span>
-                            <button onclick="deleteExpense('${expense.id}')" class="p-1 text-red-400 hover:text-red-300 transition">
-                                <i data-lucide="x" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                    `;
-                    list.appendChild(listItem);
-                });
+            if (tripToEdit) {
+                document.getElementById('date').value = tripToEdit.date;
+                document.getElementById('time').value = tripToEdit.time;
+                document.getElementById('activity').value = tripToEdit.activity;
+                document.getElementById('notes').value = tripToEdit.notes;
+                
+                editingTripId = id;
+                formButtonText.textContent = '儲存編輯';
+                cancelEditButton.classList.remove('hidden');
+                document.getElementById('activity').focus();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-            
-            // 更新總計顯示
-            const itemTotalJPY = calculateItemTotal(expenses, 'JPY');
-            document.getElementById('expense-item-total').textContent = `總計 ${currencyFormatter(itemTotalJPY, 'JPY')}`;
-            
-            // 重新渲染 Lucide 圖示
-            lucide.createIcons();
         }
-        
-        document.getElementById('add-expense-form').onsubmit = function(event) {
-            event.preventDefault();
-            
-            const dayKey = window.editingDayKey;
-            const itemId = window.editingItemId;
-            const item = findItemById(dayKey, itemId);
-            
-            if (!item) return;
 
-            const newExpense = {
-                id: crypto.randomUUID(),
-                amount: parseInt(document.getElementById('new-expense-amount').value, 10),
-                currency: document.getElementById('new-expense-currency').value,
-                description: document.getElementById('new-expense-description').value.trim(),
-            };
-            
-            if (!item.expenses) item.expenses = [];
-            item.expenses.push(newExpense);
-            
-            renderExpensesList(item.expenses);
-            saveDataToFirestore(window.itineraryData);
-            document.getElementById('add-expense-form').reset();
-            // renderItinerary(dayKey) 應該會透過 onSnapshot 觸發，但為保險手動調用
-            renderTotalCost(); 
-        };
+        cancelEditButton.addEventListener('click', () => {
+            form.reset();
+            editingTripId = null;
+            formButtonText.textContent = '新增行程';
+            cancelEditButton.classList.add('hidden');
+        });
 
-        window.deleteExpense = function(expenseId) {
-            const dayKey = window.editingDayKey;
-            const itemId = window.editingItemId;
-            const item = findItemById(dayKey, itemId);
-
-            if (!item || !item.expenses) return;
-
-            const initialLength = item.expenses.length;
-            item.expenses = item.expenses.filter(e => e.id !== expenseId);
-
-            if (item.expenses.length < initialLength) {
-                renderExpensesList(item.expenses);
-                saveDataToFirestore(window.itineraryData);
-                // renderItinerary(dayKey) 應該會透過 onSnapshot 觸發，但為保險手動調用
-                renderTotalCost(); 
-            }
-        };
-
-        // --- Firebase 初始化 ---
-
-        /**
-         * 初始化 Firebase, 處理認證與資料監聽
-         */
-        async function initFirebase() {
-            if (Object.keys(firebaseConfig).length === 0) {
-                console.error("錯誤: 未提供 Firebase 配置，應用程式將無法保存數據。");
-                loadDefaultData();
-                document.getElementById('loading').classList.add('hidden');
-                return;
-            }
-
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-            
-            // 認證流程
-            try {
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                isAuthReady = true;
-                userId = auth.currentUser.uid;
-                document.getElementById('user-id-display').textContent = `雲端帳戶 ID (私人行程): ${userId}`;
-                console.log(`Firebase 認證成功。UserID: ${userId}`);
-            } catch (error) {
-                console.error("Firebase 認證失敗:", error);
-                // 無論認證是否成功，都嘗試載入數據，如果認證失敗，則無法寫入
-                loadDefaultData();
-                document.getElementById('loading').classList.add('hidden');
-                return; 
-            }
-
-            // 數據監聽
-            const docRef = doc(db, 'artifacts', appId, 'users', userId, 'itinerary', 'data');
-            
-            // Firestore 實時監聽
-            onSnapshot(docRef, (docSnap) => {
-                if (docSnap.exists() && docSnap.data().data) {
-                    try {
-                        const loadedData = JSON.parse(docSnap.data().data);
-                        window.itineraryData = loadedData;
-                        window.initialDataLoaded = true;
-                        console.log("從 Firestore 載入數據成功。");
-                    } catch (e) {
-                        console.error("解析 Firestore 數據失敗:", e);
-                        // 如果解析失敗，則載入預設資料作為回退
-                        loadDefaultData(); 
-                    }
-                } else if (!window.initialDataLoaded) {
-                    // 如果文件不存在且尚未載入預設資料，則載入預設資料
-                    console.log("Firestore 數據不存在，載入預設行程。");
-                    loadDefaultData();
-                }
-
-                // 無論是載入、更新還是載入預設，都重新渲染
-                setupTabs();
-                renderItinerary(window.currentDay); 
-                document.getElementById('loading').classList.add('hidden');
-            }, (error) => {
-                console.error("Firestore 監聽失敗:", error);
-                // 監聽失敗時，也嘗試載入預設資料
-                loadDefaultData(); 
-                document.getElementById('loading').classList.add('hidden');
-            });
+        function deleteTrip(id) {
+            let trips = getTrips();
+            trips = trips.filter(t => t.id !== id);
+            saveTrips(trips);
+            renderTrips();
         }
-        
-        // 確保在載入後立即執行初始化
-        window.addEventListener('load', initFirebase);
-        
+
+        // 清空所有行程的對話框邏輯
+        clearAllButton.addEventListener('click', () => {
+            messageBox.classList.remove('hidden');
+        });
+
+        cancelClearButton.addEventListener('click', () => {
+            messageBox.classList.add('hidden');
+        });
+
+        confirmClearButton.addEventListener('click', () => {
+            localStorage.removeItem('travelTrips');
+            messageBox.classList.add('hidden');
+            renderTrips();
+        });
+
+        // 頁面載入時執行
+        window.onload = renderTrips;
     </script>
-
 </body>
 </html>
