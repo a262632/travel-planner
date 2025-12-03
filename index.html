@@ -5,36 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>旅行規劃 App</title>
     <!-- PWA / iOS / Android App 設定 -->
-    <meta name="theme-color" content="#3b82f6"> <!-- Android 狀態列顏色 -->
+    <meta name="theme-color" content="#3b82f6"> 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="旅行規劃">
 
-    <!-- PWA Manifest - 使用 Data URI 內嵌，強制 Android 進入 standalone 模式 -->
-    <!-- 這是修正 Samsung 瀏覽器無法全螢幕的關鍵 -->
-    <link rel="manifest" href="data:application/json;charset=utf-8, {
-      "name": "旅行規劃 App",
-      "short_name": "旅行規劃",
-      "start_url": "./",
-      "display": "standalone",
-      "background_color": "#ffffff",
-      "theme_color": "#3b82f6",
-      "icons": [
-        {
-          "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzNiODJmNiI+PHBhdGggZD0iTTAgMGgyNHYyNEgweiIvPjxwYXRoIGQ9Ik0zIDV2MTRoMThWNUgzeiIvPjxwYXRoIGQ9Ik0yMCA2aC0uOTljLS41Ni0uNTUtMS40Mi0xLTItMVMyLjk1IDIgMy43OCA0LjYyIDQgNi42NSAyLjUgOC4yNUwxLjM1IDkuNDJjLS4zMi4zMi0uNS43NS0uNSA0LjAxLS4wMSAxLjMxLjU0IDIuMTUgMS43IDEuNzEuNDYtLjE1LjctLjUyLjctLjg5cy0uMjUtLjc1LS45LS44Ny0uNjItLjQ4LS41Ny0uOTVsLjM1LTEuMTljLjEtLjMyLjQtLjU3LjgtLjg3LS40MS0uMDctLjYxLS4xNy0uNzYtLjMyLS41MS0uNjMtLjM4LTEuMTkuMzQtMS44Ni4xNS0uMTMuMTktLjI5LjE0LS40NS0uMDYtLjIuMTktLjM1LjQtLjM1aDIuNjVjLjM5IDAgLjczLjA0IDEuMDcuMTJsLjMyLjA4Yy4zMi0uMDguNjMtLjEyLjk0LS4xMi4zMSAwIC42Mi4wNCAuOTMuMTFsLjMyLjA4Yy4zNC0uMDguNjktLjE3IDEuMDctLjI1aDIuNjVjLjIxIDAgLjQ2LjE1LjQgLjM1LS4wNS4xNi0uMDEuMzIuMTQuNDUuNzIuNjcuODUgMS4yMy4zNCAxLjg2LS4xNS4xNS0uMzQuMjUtLjc2LjMyLjM4LjMtLjQxLjYtLjYyLjgyLS42Ni44MS0uNTUgMS40My0uNDcgMi4wNi4wOC41Ni40Mi44MS42NyAxLjEzLjE4LjIxLjMyLjQ0LjMyLjcyIDAgLjIyLS4wNy40Mi0uMjMuNTZsLS41MS42MmMtLjMxLjM4LS42LjY5LS42LjcyIDAgLjIyLjA3LjQ2LjIzLjU4TDIgMjAuNDJjLjM1LjIxLjc4LjMzIDEuMjUuMzMuNjUgMCAxLjI1LS4xMyAxLjg1LS40M0wxMyAyNC4wMWMtLjc2LS4xMS0xLjQ4LS4yOS0yLjE4LS41MnptLTkuNjUtMTQuNzJjLS4xOCAwLS4zNS0uMDItLjUxLS4wNi0uMDMtLjAxLS4wNi0uMDItLjEtLjA2LS4zNy0uMi0uNTctLjQ3LS42OC0uNzItLjEyLS4zMi0uMDgtLjY5LjA1LTEuMDRsLjc1LTEuOTlIMS4zNWMuMzEgMCAuNi0uMTEuODEtLjM2LjQxLS41LjM0LTEuMDItLjE2LTEuNTFsLS41OS0uNjdjLS4xNi0uMTctLjIyLS40MS0uMTYtLjY1LjA2LS4yMy4yNy0uNDIuNTUtLjU5LjI1LS4xNS41My0uMjYuOC0uMjlWNy43NWMuNjEtLjE5IDEuMDktLjMzIDEuNDktLjQ3LjIxLS4wOC4zNC0uMjguMzQtLjQ4IDAtLjE5LS4xMi0uMzktLjMyLS40Ny0uNDEtLjE1LS44NS0uMjUtMS4zMS0uMzktLjQ3LS4xNS0uODMtLjMzLTEtLjU0LS4xNC0uMTYtLjIxLS4zNS0uMjEtLjU1IDAtLjIuMDctLjQtLjE0LS40NWwxLjQtLjQ1Yy0uMTItLjA1LS4yMi0uMTItLjMyLS4xNy0uNDQtLjIyLS42Ny0uNTItLjctLjgyLS4wNS0uMjgtLjA4LS41OS0uMDgtLjkxIDAtLjQ3LjA3LS44Ni4xNy0xLjE1LjE0LS40LjQtLjcuNzYtLjk0LjI3LS4xNy41Ni0uMzUuODctLjU1Ljc2LS41MSAxLjQ3LS45NCAyLjItMS4zYy43Mi0uMzYgMS40Ny0uNTQgMi4yNy0uNTRoLjI3YzEuNTMgMCAyLjgyLjQ0IDQgMS4zMi4yMS4xLjQzLjM5LjUzLjU3LjA4LjI2LjEyLjU0LjEzLjg1IDAgLjM2LS4wOC43LS4yNSAxLjA1LS4wOS4yLS4yNS4zNy0uNTEuNDUtLjMzLjEtLjY1LjI3LS45NS40NC0uNS4zLS44NS42Ni0uOTIgMS4wOC0uMDYuMzYuMDguNzYuMzUgMS4wNS4wNy4wOC4xOC4xMy4zLjE2LjI1LjA3LjUyLjEuNzkuMDhhNC40IDQuNCAwIDAgMSAuNjUtLjA2Yy41MS0uMTguOTgtLjQxIDEuNDEtLjczLjU3LS40MiAxLS45MyAxLjI3LTEuNTguMTktLjQ0LjI4LS44OC4yOC0xLjM2VjcuODNjLS4wMS0uMTctLjA3LS4zMy0uMTgtLjQ4LS4yLS4zLS40Ni0uNTctLjc2LS44My0uNzEtLjU4LTEuNDctMS4wNy0yLjM0LTEuNDQtLjQzLS4xOC0uODgtLjMzLTEuMzYtLjQ2LS4xOC0uMDQtLjM3LS4wNy0uNTUtLjA3aC0uMDZjLS42MyAwLTEuMjUuMTEtMS44Ni4zMy0uMjQuMDgtLjUxLjE5LS43OC4zMy0uMjkuMTUtLjU2LjMyLS44LjUuMjcuMTkuNTIuMzcuNzEuNTcuNDUuNDcuNjIuOTUuNTEgMS40MS0uMTIuNDItLjQyLjgtLjg3IDEuMTQtLjMuMjMtLjY0LjQtLjk2LjU0LS42My4yOS0xLjMxLjQzLTIuMDIuNDMtLjkgMC0xLjc3LS4xNS0yLjU1LS40M1Y3LjczYzEuMTQtLjAzIDIuMDUuNjIgMi4wNSAxLjMyIDAgLjIzLS4wOC40My0uMjMuNTZsLS41MS42MmMtLjMxLjM4LS42Ljc2LS42LjczIDAgLjIyLjA3LjQyLjIzLjU2bDcuMS45NWgxLjdjLjA3LS4wMS4xMi0uMDQuMTktLjA3LjUtLjIzLjgzLS42NS44My0xLjEzIDAtLjM4LS4yNi0uNzgtLjctLjE3LS40MS0uNTMtLjc2LS45My0xLjA3LTEuMzMtLjQ3LS42Ni0uNzUtMS40LS43NS0yLjIzIDAtLjgzLjI3LTEuNS43My0yLjA3LjI3LS4zNC41NS0uNjQuODYtLjg4LjY4LS41NSAxLjQtMS4wMyAyLjItMS40Mi44Mi0uNCAxLjctLjU5IDIuNi0uNTloLjA3Yy43OSAwIDEuNTUuMTUgMi4yNS40NC4zNC4xNC42Ni4zLjkyLjQ4Ljc2LjQ4IDEuNC45OSAxLjk0IDEuNjMuMjkuMzQuNTEuNjkuNjMgMS4wNS4wOS4zNC4wNS43NC0uMDcgMS4xNi0uMDUuMTctLjIuMzQtLjQxLjQ0LS4zNS4xNi0uNzMuMjQtMS4xLjI0LS43NSAwLTEuMjYtLjU3LTEuMy0xLjMzLS4wMy0uNDcuMjUtLjg2LjctMS4wOC4xLS4wNS4xOC0uMTIuMjMtLjIuMi0uMzQuMTEtLjc0LS4xOS0xLjAyLS4zNy0uMzUtLjc5LS41Mi0xLjMtLjUyLS4yNyAwLS41My4wNS0uNzguMTItLjM4LjEyLS44LjI2LTEuMjUuNDItLjQ3LjE3LS45Ni4zNi0xLjQ0LjU2VjcuNjZjLjI0LS4wOS41LS4xOC43Ni0uMjdWMjAuMDNjLS4zMiAwLS42LS4xMS0uODItLjMyLS40My0uNS0uMzYtMS4wMi4xNS0xLjUxbDEuMjItMS4zOC0xLjA5LTEuMzFjLjQyLS40NC44OS0uODEgMS40MS0xLjA1LjE5LS4wOC4zNS0uMi4zNS0uNDIgMC0uMi0uMTItLjM3LS4zNC0uNDctLjMtLjE2LS42My0uMzItLjk2LS40OS0uNTEtLjI1LS45Ny0uNTUtMS4zNy0uOTItLjM0LS4zMS0uNjMtLjY1LS44NC0uOTYtLjE1LS4yMi0uMjQtLjQ4LS4yNC0uNzMgMC0uMy4xLS41Ny4yNy0uOC4wNy0uMDkuMjEtLjE1LjM3LS4xNWgxLjQyYy40MSAwIC44MS4wMyAxLjIxLjEuNDEuMDcuODQuMTkgMS4yNS4zNy40My4xOC44OC40MyAxLjMyLjcuNTQuMzIgMS4wNi42OCAxLjU3IDEuMDkuMTMuMTEuMjMuMjQuMjMuNDQgMCAuMjEtLjA5LjM5LS4yNi41Mi0uNTMuMzgtMS4wNi43LTEuNTggMS4wMS0uMjcuMTYtLjU2LjMtLjg2LjQyLS40OS4xNy0xIC4yOC0xLjUxLjM3LS4wNy4wMi0uMTQuMDQtLjIxLjA1VjcuNDRjLS4yNi0uMDktLjUzLS4xNy0uOC0uMjMgMS4wOS0uMDMgMi4yNS41MyAyLjI1IDEuMzQgMCAuMjEtLjA5LjQxLS4yNi41M2wtLjgxLjg1Yy0uMi4yMS0uMy40OC0uMjkuNzUgMCAuMjguMDcuNTMuMjMuNzRsMi4yNSAyLjZjLjEyLjE1LjE4LjM0LjE4LjU0IDAgLjIzLS4wOC40My0uMjMuNTZsLS41Mi42MmMtLjMxLjM4LS42Ljc2LS42LjczIDAgLjIyLjA3LjQyLjIzLjU2bDEuMTQtMS41MWMuMTktLjIzLjQtLjQ3LjYyLS43Mi43MS0uNzYgMS40NS0xLjQ0IDIuMjUtMS45NWMuNTctLjM3IDEuMTctLjY1IDEuOC0uODMuMzEtLjA5LjYzLS4xMy45NS0uMTMuODIgMCAxLjU2LjE2IDIuMjguNDcgLjM2LjE2LjY4LjM5Ljk2LjY5LjY4Ljc0IDEuMzEgMS42MiAxLjggMi42MS4xLjItLjEuNC0uMTUuNi0uMDMuMDgtLjA1LjE2LS4wNi4yNS0uMDcgLjQ1LjA5LjcuNDYgMS4xMS4zNi4zOS41LjguNCAxLjE5VjcuMzZjLjQ3LS4wOC45Ny0uMjIgMS40Ny0uNDNsMi42Ni0uOTdjLjE1LS4wNi4zLS4xLjQ3LS4xLjI4IDAgLjUzLjEyLjcxLjM0LjIgLjIyLjMxLjUuMzEuNzIgMCAuMjItLjA3LjQzLS4yMy42Yy0uMzUuMzMtLjc0LjYzLTEuMTcuOTYtLjU1LjQxLTEuMTEuNzYtMS42OCAxLjA1LS4zNi4xOC0uNzQuMzEtMS4xMy4zOWg0LjA2Yy4yNyAwIC41Mi4xMi42OS4zNC4xNy4yMi4yNi41LjI2LjcyIDAgLjIyLS4wNy40My0uMjMuNWMtLjM5LjMzLS44MS42Mi0xLjI4Ljg0LS41LjIyLTEuMDMuNDQtMS41OC42NS0uMzQuMTMtLjY5LjI1LTEuMDQuMzdWMjAuNDNjLjMxIDAgLjYtLjExLjgyLS4zMkwyMy4yNCA5LjQzYy4xNS0uMTYuMjMtLjM2LjIzLS41OCAwLS4yMi0uMDctLjQ0LS4yMy0uNTgtLjM1LS4zMy0uNzQtLjYyLTEuMTctLjg0LS40Ny0uMjItLjk3LS40MS0xLjQ4LS41Ny0uMjUtLjA4LS41LS4xMy0uNzYtLjE1VjYuNjdjLjMtLjA4LjYxLS4xNS45Mi0uMjQuNTMtLjE2IDEuMDctLjQzIDEuNTgtLjc4LjE4LS4xMi4zMS0uMzMuMzEtLjU1IDAtLjE3LS4wNy0uMzQtLjE4LS40OC0uMTYtLjIxLS40LS4zNS0uNjktLjM1aC01LjRjLS4yOSAwLS41My4xMi0uNzEuMzMtLjE1LjI2LS4yMS41NS0uMTkgLjg0VjcuMzZ6IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==",
-          "sizes": "192x192",
-          "type": "image/svg+xml"
-        }
-      ]
-    }">
+    <!-- 💥 關鍵 PWA 修正：連結到獨立的 manifest.json 檔案 💥 -->
+    <link rel="manifest" href="./manifest.json"> 
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-        /* 隱藏 Chrome/Android 的網址列和狀態列 */
-        body, html { height: 100%; overflow: auto; }
+        
+        /* 確保在 App 模式下不會顯示瀏覽器元件 */
         @media all and (display-mode: standalone) {
             .browser-chrome { display: none; }
         }
@@ -132,7 +117,8 @@
 
         // 檢查瀏覽器是否支援 Local Storage
         if (typeof(Storage) === "undefined") {
-            alert('抱歉，您的瀏覽器不支援本地儲存，行程將無法保存。');
+            // 使用 toast 或 custom alert 替代原生的 alert
+            console.error('抱歉，您的瀏覽器不支援本地儲存，行程將無法保存。');
         }
 
         // --- 核心功能：讀取/保存/渲染 ---
@@ -312,17 +298,4 @@
         });
 
         cancelClearButton.addEventListener('click', () => {
-            messageBox.classList.add('hidden');
-        });
-
-        confirmClearButton.addEventListener('click', () => {
-            localStorage.removeItem('travelTrips');
-            messageBox.classList.add('hidden');
-            renderTrips();
-        });
-
-        // 頁面載入時執行
-        window.onload = renderTrips;
-    </script>
-</body>
-</html>
+            messageBox.classList.add('hidden
