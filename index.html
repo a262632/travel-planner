@@ -3,1479 +3,960 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>旅遊行程規劃 (鵝黃色主題)</title>
-    <!-- 載入 Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
-    <!-- 載入 Lucide Icons --><script src="https://unpkg.com/lucide@latest"></script>
+    <title>東京富士山8日深度旅行手冊 (完整版)</title>
     <style>
-        /* 設定字體為 Inter，並提供 fallback */
         :root {
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --fuji-blue: #5d8aa8;
+            --cherry-pink: #e91e63;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --border-radius: 8px;
         }
-        /* 讓可點擊的標題看起來像連結 */
-        .activity-link:hover {
-            text-decoration: underline;
-            color: var(--color-blue-600, #2563eb); 
+
+        body {
+            font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
         }
-        /* 讓花費列表在手機上保持可讀性 */
-        #expenses-list li {
-            word-break: break-word;
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--fuji-blue));
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
         }
-        /* 調整輸入框的背景和文字顏色，確保在淺色模式下的可見性 */
-        input:not([type="checkbox"]):not([type="radio"]), select, textarea {
-            background-color: #f3f4f6 !important; /* bg-gray-100 */
-            color: #1f2937 !important; /* text-gray-900 */
-            border-color: #d1d5db !important; /* border-gray-300 */
+
+        header h1 { margin: 0; font-size: 1.8rem; }
+        header .subtitle { margin-top: 10px; opacity: 0.9; }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1rem;
         }
-        /* 滾動條樣式調整以適應淺色模式 */
-        #expenses-list::-webkit-scrollbar, #tab-container::-webkit-scrollbar, #image-preview-area::-webkit-scrollbar {
-            height: 4px;
-            width: 4px;
+
+        /* Nav */
+        .nav-days {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            background: var(--bg-color);
+            z-index: 100;
+            border-bottom: 1px solid #ddd;
         }
-        #expenses-list::-webkit-scrollbar-thumb, #tab-container::-webkit-scrollbar-thumb, #image-preview-area::-webkit-scrollbar-thumb {
-            background-color: #9ca3af; /* gray-400 */
-            border-radius: 2px;
+        .nav-btn {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
-        #expenses-list::-webkit-scrollbar-track, #tab-container::-webkit-scrollbar-track, #image-preview-area::-webkit-scrollbar-track {
-            background-color: #f3f4f6; /* gray-100 */
+        .nav-btn:hover { background: var(--fuji-blue); color: white; }
+
+        /* Content Blocks */
+        .section-title {
+            border-left: 5px solid var(--cherry-pink);
+            padding-left: 10px;
+            margin: 2rem 0 1rem;
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            font-weight: bold;
         }
-        /* 載入動畫 (Spinner for Image Generation) */
-        .loading-spinner {
-            border-top-color: #FBBF24; /* yellow-500 */
-            border-right-color: #FBBF24; /* yellow-500 */
-            border-bottom-color: transparent;
-            border-left-color: transparent;
-            animation: spin 1s linear infinite;
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        h3 { color: var(--fuji-blue); border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 0;}
+        h4 { color: var(--primary-color); margin-top: 1.5rem; }
+
+        /* Tables */
+        .table-container { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        th, td { border: 1px solid #eee; padding: 10px; text-align: left; vertical-align: top; }
+        th { background-color: #f8f9fa; color: var(--primary-color); white-space: nowrap; }
+        
+        /* Specific Table Styling for Transport */
+        .transport-table th { background-color: #eef2f5; }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: white;
+            margin-top: 4px;
+        }
+        .badge.yr { background-color: #27ae60; } /* Green */
+        .badge.tg { background-color: #e67e22; } /* Orange */
+        .badge.pending { background-color: #95a5a6; } /* Grey */
+
+        /* Map Links */
+        .map-link {
+            color: var(--cherry-pink);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .map-link::before { content: "📍"; margin-right: 2px; }
+        .map-link:hover { text-decoration: underline; }
+
+        /* Day Accordion */
+        .day-block {
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            background: white;
+            overflow: hidden;
+        }
+        .day-header {
+            background: #fdfdfd;
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-left: 5px solid var(--primary-color);
+        }
+        .day-header:hover { background: #f0f0f0; }
+        .day-body { display: none; padding: 1.5rem; border-top: 1px solid #eee; }
+        .day-body.open { display: block; }
+
+        /* Steps & Lists */
+        ul, ol { padding-left: 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        .highlight-box {
+            background-color: #fff8e1;
+            border: 1px solid #ffecb3;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
         }
     </style>
 </head>
-<body class="bg-yellow-50 min-h-screen text-gray-900">
+<body>
 
-    <!-- 載入畫面 (調整顏色以適應淺色模式) --><div id="loading" class="fixed inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-50">
-        <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-yellow-500"></div>
-        <p class="ml-4 text-lg text-gray-700">載入中，請稍候...</p>
-    </div>
+<header>
+    <h1>🗻 東京富士山8日深度旅行手冊 🗼</h1>
+    <div class="subtitle">旅遊日期: 12/13 (六) - 12/20 (六) | 兩張 1 Day Pass 附官方連結</div>
+</header>
 
-    <!-- 主容器 --><div class="max-w-4xl mx-auto p-4 md:p-6">
-        <header class="text-center mb-6">
-            <h1 class="text-3xl font-extrabold text-yellow-800 border-b border-yellow-300 pb-2">我的日本之旅：行程規劃</h1>
-            <p class="text-sm text-gray-600 mt-1">12月13日 (第一天) - 12月20日 (第八天)</p>
-            <p id="user-id-display" class="text-xs text-gray-500 mt-1">已連結到雲端帳戶 (私人行程)</p> 
-            
-            <!-- 實時匯率及總花費顯示區塊 (淺色調整) --><div id="cost-dashboard" class="mt-4 p-4 bg-yellow-100 border border-red-400 rounded-xl shadow-xl mx-auto max-w-lg space-y-3">
-                
-                <!-- 新增：實時匯率顯示 (淺色調整) --><div id="live-rate-display" class="p-2 bg-yellow-200 border border-yellow-400 rounded-lg">
-                    <p class="text-sm font-semibold text-yellow-800 flex items-center justify-center">
-                        <i data-lucide="scan-line" class="w-4 h-4 mr-2 text-yellow-600"></i> 
-                        <span class="text-xs">當前實時匯率 (自動更新):</span>
-                        <span id="live-rate-value" class="ml-2 text-base font-extrabold text-red-600">--</span>
-                    </p>
-                </div>
+<div class="container">
 
-                <!-- 總花費顯示 (淺色調整) --><div class="flex items-center justify-center space-x-3">
-                    <h2 class="text-xl font-bold text-gray-800">總花費概算</h2>
-                    <button id="toggle-currency-btn" class="text-sm px-3 py-1 bg-red-500 text-white font-medium rounded-full hover:bg-red-600 transition duration-150 transform hover:scale-105 shadow-md">
-                        切換幣別
-                    </button>
-                </div>
-                <!-- 主要顯示金額 --><p id="main-total-cost" class="text-3xl font-extrabold text-red-600 mt-2">--</p>
-                <!-- 次要顯示金額 (轉換後) -->
-                <!-- 根據使用者要求，此處將不再顯示轉換後的次要幣別概算 -->
-                <p id="sub-total-cost" class="text-sm text-gray-600 mt-1"></p>
-            </div>
+    <nav class="nav-days">
+        <a href="#section-overview" class="nav-btn">總表與購票</a>
+        <a href="#day1" class="nav-btn">D1 新宿抵達</a>
+        <a href="#day2" class="nav-btn">D2 河口湖</a>
+        <a href="#day3" class="nav-btn">D3 西湖</a>
+        <a href="#day4" class="nav-btn">D4 山中湖</a>
+        <a href="#day5" class="nav-btn">D5 六本木</a>
+        <a href="#day6" class="nav-btn">D6 橫濱</a>
+        <a href="#day7" class="nav-btn">D7 澀谷</a>
+        <a href="#day8" class="nav-btn">D8 返程</a>
+    </nav>
 
-        </header>
-
-        <!-- 旅程日曆分頁導航 (淺色調整) --><nav class="sticky top-0 bg-white/95 backdrop-blur-sm z-30 shadow-lg rounded-xl p-2 mb-6 border border-gray-200">
-            <div id="tab-container" class="flex overflow-x-auto space-x-2 pb-1">
-                <!-- Tabs will be injected here by JavaScript --></div>
-        </nav>
-
-        <!-- 行程內容區塊 --><main id="itinerary-content" class="space-y-6">
-            <!-- Itinerary items will be rendered here --></main>
-
-        <!-- 新增行程按鈕 --><div class="mt-8 text-center">
-            <button id="add-item-btn" class="w-full md:w-auto px-6 py-3 bg-yellow-600 text-white font-semibold rounded-xl shadow-lg hover:bg-yellow-700 transition duration-150 transform hover:scale-[1.01] flex items-center justify-center">
-                <i data-lucide="plus-circle" class="w-5 h-5 mr-2"></i> 新增行程項目
-            </button>
-        </div>
-
-        <!-- 新增/編輯行程表單 (模組化顯示, 淺色調整) --><div id="item-form-container" class="fixed inset-0 bg-gray-900 bg-opacity-40 z-40 hidden flex items-center justify-center p-4" onclick="closeForm(event)">
-            <form id="item-form" class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto border border-gray-200" onclick="event.stopPropagation()">
-                <h2 class="text-2xl font-bold text-gray-800 border-b border-gray-200 pb-2"><span id="form-title">新增行程項目</span> 第 <span id="current-day-label"></span> 天</h2>
-                
-                <!-- 錯誤訊息顯示區塊 (NEW) --><div id="form-error-message" class="hidden p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg" role="alert">
-                    <p id="form-error-text" class="font-medium"></p>
-                </div>
-
-                <!-- 隱藏欄位，用於儲存被編輯項目的 ID 和 DayKey --><input type="hidden" id="edit-item-id">
-                <input type="hidden" id="edit-day-key">
-
-                <!-- 行程名稱及時間 --><div class="flex space-x-3">
-                    <div class="flex-1">
-                        <label for="activity" class="block text-sm font-medium text-gray-700">行程名稱/地點 <span class="text-red-500">*</span></label>
-                        <input type="text" id="activity" required class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition">
-                    </div>
-                    <div class="w-32">
-                        <label for="time" class="block text-sm font-medium text-gray-700">預計時間</label>
-                        <select id="time" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition">
-                            <!-- Time options generated by JS --></select>
-                    </div>
-                </div>
-
-                <!-- 交通方式 (下拉式選單) --><div>
-                    <label for="transport" class="block text-sm font-medium text-gray-700">交通方式</label>
-                    <select id="transport" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition">
-                        <option value="步行">步行</option>
-                        <option value="計程車">計程車</option>
-                        <option value="JR">JR (日本鐵路)</option>
-                        <option value="私鐵">私鐵 (Private Rail)</option>
-                        <option value="巴士">巴士</option>
-                        <option value="飛機">飛機</option>
-                    </select>
-                </div>
-
-                <!-- 飛機專用欄位 (淺色調整) --><div id="flight-inputs" class="hidden space-y-4 p-3 bg-blue-100 rounded-lg border border-blue-300">
-                    <h3 class="text-md font-semibold text-blue-700">飛機資訊</h3>
-                    <div>
-                        <label for="flight-number" class="block text-sm font-medium text-gray-700">班次 (Flight Number)</label>
-                        <input type="text" id="flight-number" placeholder="例如: JL001" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition">
-                    </div>
-                </div>
-                
-                <!-- 交通細節欄位 (淺色調整) --><div id="transit-inputs" class="space-y-4 p-3 bg-gray-100 rounded-lg border border-gray-300">
-                    <h3 class="text-md font-semibold text-gray-800">交通細節</h3>
-
-                    <!-- 起點及時間 --><div class="flex space-x-3">
-                        <div class="flex-1">
-                            <label for="start-point" class="block text-sm font-medium text-gray-700">起點</label>
-                            <input type="text" id="start-point" placeholder="輸入起點或車站名稱" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition">
-                        </div>
-                        <div class="w-32">
-                            <label for="start-time" class="block text-sm font-medium text-gray-700">出發時間</label>
-                            <select id="start-time" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition">
-                                <!-- Time options generated by JS --></select>
-                        </div>
-                    </div>
-
-                    <!-- 終點及時間 --><div class="flex space-x-3">
-                        <div class="flex-1">
-                            <label for="end-point" class="block text-sm font-medium text-gray-700">終點</label>
-                            <!-- 加上 oninput 事件監聽，確保在輸入時更新 Uber 按鈕連結 -->
-                            <input type="text" id="end-point" placeholder="輸入終點或車站名稱" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition" oninput="updateUberButton()">
-                        </div>
-                        <div class="w-32">
-                            <label for="end-time" class="block text-sm font-medium text-gray-700">到達時間</label>
-                            <select id="end-time" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition">
-                                <!-- Time options generated by JS --></select>
-                        </div>
-                    </div>
-                    
-                    <!-- 新增：Uber 叫車按鈕區塊 (只有在計程車被選擇時顯示) -->
-                    <div id="uber-button-container" class="hidden pt-2">
-                        <a id="uber-link-button" href="#" target="_blank" class="w-full px-4 py-2 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition duration-150 transform hover:scale-[1.01] flex items-center justify-center shadow-md disabled:opacity-50 disabled:cursor-not-allowed" title="點擊連結到 Uber">
-                            <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-1.85 18.067c-.255 0-.505-.078-.718-.236l-4.72-3.41c-.57-.413-.674-1.233-.243-1.804.432-.57 1.252-.673 1.823-.243l3.964 2.872V5.933c0-.663.538-1.2 1.2-1.2s1.2.537 1.2 1.2v11.011l3.964-2.872c.57-.413 1.39-.31 1.822.26.432.57.328 1.39-.243 1.804l-4.72 3.41c-.213.158-.463.236-.718.236z"/>
-                            </svg>
-                            開啟 Uber 叫車 (目的地：<span id="uber-destination-text">--</span>)
-                        </a>
-                        <p class="text-xs text-gray-600 mt-1">請注意：此連結依賴於 Uber 網頁服務，並以終點站名稱作為目的地。</p>
-                    </div>
-                </div>
-
-                <!-- Google Maps Link --><div>
-                    <label for="map-link" class="block text-sm font-medium text-gray-700">Google Map 連結 (將自動搜尋填入)</label>
-                    <input type="url" id="map-link" placeholder="貼上 Google Maps 或地點連結" class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition">
-                </div>
-
-                <!-- 花費管理按鈕 (淺色調整) --><div class="p-3 bg-red-100 rounded-lg border border-red-300 space-y-3">
-                    <h3 class="text-md font-semibold text-red-700 flex items-center mb-2">
-                        <i data-lucide="wallet" class="w-5 h-5 mr-2"></i> 花費記錄 (點擊管理細項)
-                    </h3>
-                    <button type="button" id="manage-expenses-btn" class="w-full px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-150 transform hover:scale-[1.01]">
-                        <span id="current-expense-summary">管理花費細項 (目前: 總計 JPY 0)</span>
-                    </button>
-                </div>
-
-
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="hideForm()" class="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition">
-                        取消
-                    </button>
-                    <button type="submit" id="submit-button" class="px-4 py-2 bg-yellow-600 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-700 transition">
-                        儲存行程
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- 新增花費管理模組 (Expense Manager, 淺色調整) --><div id="expense-manager-container" class="fixed inset-0 bg-gray-900 bg-opacity-40 z-50 hidden flex items-center justify-center p-4" onclick="closeExpenseManager(event)">
-            <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-xl space-y-4 max-h-[90vh] overflow-y-auto border border-gray-200" onclick="event.stopPropagation()">
-                <h2 class="text-2xl font-bold text-gray-800 border-b border-gray-200 pb-2">管理花費細項 - <span id="current-expense-activity"></span></h2>
-                
-                <!-- 總計顯示 (淺色調整) --><div class="p-3 bg-red-100 rounded-lg flex justify-between items-center font-bold text-red-700">
-                    <span>此行程總花費：</span>
-                    <span id="expense-item-total" class="text-xl">總計 JPY 0</span>
-                </div>
-
-                <!-- 現有花費列表 (淺色調整) --><div>
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2">已記錄細項</h3>
-                    <ul id="expenses-list" class="space-y-2 max-h-40 overflow-y-auto pr-2">
-                        <!-- Expenses list will be rendered here --></ul>
-                    <p id="no-expenses-message" class="text-sm text-gray-500 p-2 border border-gray-300 rounded-lg text-center mt-2 hidden">尚未記錄任何花費。</p>
-                </div>
-
-                <!-- 新增花費表單 (淺色調整) --><form id="add-expense-form" class="p-3 border border-gray-300 rounded-lg space-y-3">
-                    <h3 class="text-lg font-semibold text-gray-700">新增細項花費</h3>
-                    
-                    <div class="flex space-x-3">
-                        <div class="w-1/2">
-                            <label for="new-expense-amount" class="block text-sm font-medium text-gray-700">金額</label>
-                            <input type="number" id="new-expense-amount" placeholder="0" min="1" required class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition">
-                        </div>
-                        <div class="w-1/2">
-                            <label for="new-expense-currency" class="block text-sm font-medium text-gray-700">幣別</label>
-                            <select id="new-expense-currency" required class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition">
-                                <option value="JPY">日幣 (JPY)</option>
-                                <option value="NTD">台幣 (NTD)</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <!-- 移除手動匯率輸入區塊，改為顯示自動匯率資訊 (淺色調整) --><div id="exchange-rate-info-container" class="p-2 bg-blue-100 rounded-lg border border-blue-300">
-                        <p id="auto-rate-info" class="text-xs text-blue-700 font-medium">
-                            <!-- 顯示 1 JPY = X NTD，並註明用於 NTD->JPY 轉換的匯率 -->* NTD 金額將自動使用以下匯率計算（**四捨五入到個位**）：
-                            <span class="block text-sm font-bold mt-1">1 JPY ≈ <span id="auto-rate-value-jpy-to-ntd"></span> NTD</span>
-                            <span class="block text-xs text-gray-600">(計算時使用的轉換率：1 NTD ≈ <span id="auto-rate-value-ntd-to-jpy"></span> JPY)</span>
-                        </p>
-                    </div>
-
-                    <div>
-                        <label for="new-expense-description" class="block text-sm font-medium text-gray-700">用途描述 (例如: 門票, 午餐)</label>
-                        <input type="text" id="new-expense-description" placeholder="輸入描述" required class="mt-1 block w-full rounded-lg shadow-sm p-2.5 focus:ring-yellow-500 focus:border-yellow-500 transition">
-                    </div>
-
-                    <button type="submit" class="w-full px-4 py-2 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition">
-                        新增花費
-                    </button>
-                </form>
-
-                <div class="flex justify-end pt-2">
-                    <button type="button" onclick="hideExpenseManager()" class="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition">
-                        關閉 (自動儲存)
-                    </button>
-                </div>
-            </div>
-        </div>
+    <div id="section-overview">
+        <div class="section-title">■ 購票與交通關鍵指南</div>
         
-        <!-- *** 新增：插圖生成管理模組 (Image Manager, 淺色調整, Z-Index 60) *** --><div id="image-manager-container" class="fixed inset-0 bg-gray-900 bg-opacity-40 z-60 hidden flex items-center justify-center p-4" onclick="closeImageManager(event)">
-            <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-3xl space-y-4 max-h-[95vh] overflow-y-auto border border-gray-200" onclick="event.stopPropagation()">
-                <h2 class="text-2xl font-bold text-gray-800 border-b border-gray-200 pb-2">
-                    <i data-lucide="camera" class="w-6 h-6 mr-2 inline-block align-text-bottom"></i> 
-                    為行程項目新增插圖：<span id="current-image-activity" class="text-yellow-600"></span>
-                </h2>
-                
-                <!-- 輸入區域 --><div class="space-y-3">
-                    <label for="image-prompt-input" class="block text-sm font-medium text-gray-700">請輸入您想要的插圖描述 (越詳細越好)</label>
-                    <div class="flex flex-col md:flex-row gap-3">
-                        <input type="text" id="image-prompt-input" placeholder="例如：櫻花樹下的日本城堡，水墨風格"
-                               class="flex-grow p-2.5 rounded-lg shadow-sm focus:ring-yellow-500 focus:border-yellow-500 transition">
-                        <button id="generate-image-btn" type="button" onclick="handleGenerateImage()"
-                                class="bg-yellow-600 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md hover:bg-yellow-700 transition duration-150 ease-in-out flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
-                            <div id="image-btn-icon" data-lucide="sparkles" class="w-5 h-5 mr-2"></div>
-                            <span id="image-btn-text">生成新插圖</span>
-                        </button>
-                    </div>
-                </div>
+        <div class="card">
+            <h3>1. 每日行程總表摘要與預約狀況</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>主活動區域</th>
+                            <th>核心景點/體驗</th>
+                            <th>住宿地點 / 預約狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>12/13 (六)</td>
+                            <td>東京 新宿</td>
+                            <td>19:20成田機場抵達 → 機場接駁(N'EX/利木津) → 新宿 Check-in / 深夜晚餐</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=VIA+INN+SHINJUKU" target="_blank" class="map-link">VIA INN SHINJUKU</a><br><span class="badge yr">已預約(YR) / TWD</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/14 (日)</td>
+                            <td>河口湖</td>
+                            <td>新宿(高速巴士) → 河口湖站(寄放行李/午餐) → 新倉富士淺間神社(忠靈塔)</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=The+Noborisaka+village" target="_blank" class="map-link">The Noborisaka village</a><br><span class="badge tg">已預約(TG) / TWD</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/15 (一)</td>
+                            <td>西湖/河口湖</td>
+                            <td>西湖療癒之里根場 (午餐) → 大石公園 (逆富士) → 音樂盒之森美術館 →河口湖香草館 [使用 河口湖·西湖 1DayPass]</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=The+Noborisaka+village" target="_blank" class="map-link">The Noborisaka village</a><br><span class="badge tg">已預約(TG)</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/16 (二)</td>
+                            <td>山中湖</td>
+                            <td>山中湖 (早午餐/遊船) → 忍野八海 [使用 富士吉田·山中湖 1DayPass]</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=The+Noborisaka+village" target="_blank" class="map-link">The Noborisaka village</a><br><span class="badge tg">已預約(TG)</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/17 (三)</td>
+                            <td>東京 新宿/六本木</td>
+                            <td>河口湖 → 新宿 (高速巴士) → 六本木之丘 (聖誕嘉年華/夜景)</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=Toyoko+Inn+Shinjuku" target="_blank" class="map-link">東橫INN</a><br><span class="badge yr">已預約(YR) / TWD</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/18 (四)</td>
+                            <td>東京 橫濱</td>
+                            <td>明治神宮 → 橫濱一日遊 (相鐵JOINUS / 空中纜車 / 紅磚倉庫)</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=Toyoko+Inn+Shinjuku" target="_blank" class="map-link">東橫INN</a><br><span class="badge yr">已預約(YR)</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/19 (五)</td>
+                            <td>東京 新宿/澀谷</td>
+                            <td>新宿LUMINE → 澀谷 Hikarie → 澀谷SKY (17:40) → 澀谷十字路口 / 青之洞窟 (代代木公園)</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=Toyoko+Inn+Shinjuku" target="_blank" class="map-link">東橫INN</a><br><span class="badge yr">已預約(YR)</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/20 (六)</td>
+                            <td>東京 成田機場</td>
+                            <td>09:39 N'EX (新宿) → 14:00 成田機場班機起飛</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                <!-- 圖像預覽和狀態區域 --><div id="image-preview-area" class="min-h-[300px] max-h-[50vh] overflow-y-auto bg-gray-100 rounded-xl flex items-center justify-center p-4 border border-gray-300">
-                    <p id="image-status-message" class="text-gray-500 text-center">在此輸入描述並生成圖像，或貼上外部圖片連結。</p>
-                    <img id="preview-generated-image" class="hidden w-full h-auto object-contain rounded-lg shadow-lg" alt="生成的圖像">
-                    <!-- 載入動畫 --><div id="image-loading-indicator" class="hidden flex flex-col items-center">
-                        <div class="loading-spinner w-8 h-8 border-4 rounded-full mb-3"></div>
-                        <p class="text-yellow-500 font-medium">正在生成中，請稍候...</p>
-                    </div>
-                    <!-- 錯誤訊息容器 --><div id="image-error-message" class="hidden bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded relative" role="alert">
-                        <strong class="font-bold">生成失敗！</strong>
-                        <span class="block sm:inline" id="image-error-details"></span>
-                    </div>
-                </div>
-                
-                <!-- 動作按鈕 --><div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-                    <button type="button" onclick="closeImageManager()" class="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition">
-                        取消並保留原圖
-                    </button>
-                    <button type="button" id="save-image-btn" onclick="saveImageToItem()" disabled
-                            class="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                        <i data-lucide="save" class="w-5 h-5 mr-2 inline-block align-text-bottom"></i>
-                        儲存插圖
-                    </button>
-                    <button type="button" id="remove-image-btn" onclick="removeImageFromItem()"
-                            class="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                        <i data-lucide="trash-2" class="w-5 h-5 mr-2 inline-block align-text-bottom"></i>
-                        移除插圖
-                    </button>
-                </div>
+        <div class="card">
+            <h3>2. 重要交通樞紐站點</h3>
+            <ul>
+                <li><strong>高速巴士上車地:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Busta+Shinjuku" target="_blank" class="map-link">Busta 新宿 (4樓)</a> (新宿車站南口正上方)</li>
+                <li><strong>橫濱交通樞紐:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Sakuragicho+Station" target="_blank" class="map-link">櫻木町站</a> (Minatomirai 區域核心)</li>
+                <li><strong>N'EX 乘車處:</strong> JR 新宿站 (第5、6番線，請依月台指示)</li>
+                <li><strong>Skyliner 乘車處:</strong> 京成上野站 / 日暮里站 (需從日暮里轉乘 JR 山手線或京濱東北線至新宿)</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>3. 票券與住宿預約清單</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>票券名稱</th>
+                            <th>購買地點/乘車資訊</th>
+                            <th>票價 (約)</th>
+                            <th>備註</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>12/13 (六)</td>
+                            <td>利木津巴士<br>(成田機場第一航廈→新宿西口)</td>
+                            <td>巴士乘車券在入境大廳一樓 (1F) 櫃台購買<br>乘車處在 1F 戶外巴士站牌<br><a href="#" class="map-link">利木津巴士官方網站</a></td>
+                            <td>-</td>
+                            <td>待購票</td>
+                        </tr>
+                        <tr>
+                            <td>12/13</td>
+                            <td>成田特快N'EX<br>(成田機場第一航廈→新宿)</td>
+                            <td>N'EX 購票與動線指南: 請參考 JR東日本官方網站，內有詳細的購票地點、劃位流程與月台動線圖。</td>
+                            <td>-</td>
+                            <td>待購票</td>
+                        </tr>
+                        <tr>
+                            <td>12/13</td>
+                            <td>Skyliner(需轉乘)<br>(成田機場第一航廈→京成上野站 / 日暮里站)</td>
+                            <td>可在機場 B1 京成電鐵櫃台或售票機購買。<br>乘車口在機場 B1 F。<br><a href="#" class="map-link">京成電鐵 Skyliner 官方網站</a></td>
+                            <td>2,775 JPY</td>
+                            <td>待購票</td>
+                        </tr>
+                        <tr>
+                            <td>12/14 (日)</td>
+                            <td>富士急行高速巴士<br>(09:35 Busta新宿總站→河口湖)</td>
+                            <td>Busta 新宿 (4樓) (新宿車站南口正上方)<br>Highwaybus.com (中文)<br>出示 QR Code 乘車。</td>
+                            <td>1,777 TWD</td>
+                            <td><span class="badge tg">已購票(TG)</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/15 (一)</td>
+                            <td>1DayPass 河口湖·西湖·本棲湖<br>(Day 3 使用)</td>
+                            <td>河口湖/富士山站巴士窗口 / 官方網站<br>1日券。主要用於 Day 3 (紅線/綠線)。涵蓋河口湖與西湖周遊。<br>河口湖、西湖、本棲湖 1DayPass 免費優惠券</td>
+                            <td>1,340 TWD</td>
+                            <td><span class="badge tg">已購票(TG)</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/16 (二)</td>
+                            <td>1DayPass 富士吉田·忍野·山中湖<br>(Day 4 使用)</td>
+                            <td>河口湖/富士山站巴士窗口 / 官方網站<br>1日券。主要用於 Day 4 (A-Line 巴士)。涵蓋富士吉田、忍野八海、山中湖。<br>1DayPass富士吉田·忍野·山中湖區域通用免費優惠券</td>
+                            <td>-</td>
+                            <td><span class="badge tg">已購票(TG)</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/17 (三)</td>
+                            <td>富士急行高速巴士<br>(13:00 河口湖→Busta新宿總站)</td>
+                            <td>已購票，河口湖巴士站<br>Highwaybus.com (中文)<br>出示 QR Code 乘車。</td>
+                            <td>-</td>
+                            <td><span class="badge tg">已購票(TG)</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/18 (四)</td>
+                            <td>橫濱空中纜車</td>
+                            <td>已購票</td>
+                            <td>402</td>
+                            <td><span class="badge yr">已購票(YR)</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/19 (五)</td>
+                            <td>澀谷SKY</td>
+                            <td>已購票，預約17:40</td>
+                            <td>1,376</td>
+                            <td><span class="badge yr">已購票(YR)</span></td>
+                        </tr>
+                        <tr>
+                            <td>12/20 (六)</td>
+                            <td>成田特快N'EX<br>(新宿→成田機場第一航廈)</td>
+                            <td>已購票</td>
+                            <td>1,306</td>
+                            <td><span class="badge yr">已購票(YR)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    
-    <!-- 載入 Firebase 函式庫 --><script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // 必須使用的全域變數
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+    <div class="section-title">📝 每日行程細節與交通時刻表</div>
 
-        let db;
-        let auth;
-        let userId = null;
-        let isAuthReady = false;
+    <!-- DAY 1 -->
+    <div id="day1" class="day-block">
+        <div class="day-header" onclick="toggleDay(this)">DAY 1: 12/13 (六) ✈️ 晚間抵達與深夜晚餐 <span>▼</span></div>
+        <div class="day-body">
+            <h4>✅ 行程概要 (晚間) - 時間軸:</h4>
+            <ul>
+                <li>19:20 抵達 NRT，辦理入境 (預抓 1 小時)。</li>
+                <li>20:20 領取行李、購買車票（目標搭乘 20:30 - 21:00 班次）。</li>
+                <li>22:30 抵達新宿，入住 <a href="https://www.google.com/maps/search/?api=1&query=VIA+INN+SHINJUKU" target="_blank" class="map-link">VIA INN SHINJUKU</a>。</li>
+            </ul>
 
-        // 全域狀態：儲存所有 8 天的行程資料
-        window.itineraryData = {};
-        window.currentDay = 'day1'; // 預設在第一天
-        window.initialDataLoaded = false; // 用於確保只在沒有數據時匯入一次行程
-        window.editingItemId = null; // 用於追蹤正在編輯的行程 ID (通用)
-        window.editingDayKey = null; // 用於追蹤正在編輯的 Day Key (通用)
-        
-        // --- 匯率控制 (核心變更) ---
-        
-        // 實時匯率狀態。使用 Google 搜尋結果的當前值。
-        const JPY_TO_NTD_RATE = 0.209; // 1 JPY = X NTD (從 Google 搜尋結果獲得)
-        const NTD_TO_JPY_RATE = 1 / JPY_TO_NTD_RATE; // 1 NTD = X JPY
-        
-        // 保持 window.liveExchangeRate 變數名以確保舊的 calculateItemTotal 邏輯相容 (它需要 NTD->JPY 匯率)
-        window.liveExchangeRate = NTD_TO_JPY_RATE; 
-        window.JPY_TO_NTD_RATE = JPY_TO_NTD_RATE; // 新增 JPY->NTD 匯率供顯示
-        window.NTD_TO_JPY_RATE = NTD_TO_JPY_RATE; // 新增 NTD->JPY 匯率供顯示
-        window.rateSource = '實時匯率 (Google 搜尋結果)';
-        
-        // 全域狀態：顯示幣別
-        window.displayCurrency = 'JPY'; 
-        
-        const DATE_MAP = {
-            'day1': '12/13', 'day2': '12/14', 'day3': '12/15', 'day4': '12/16',
-            'day5': '12/17', 'day6': '12/18', 'day7': '12/19', 'day8': '12/20'
-        };
+            <h4>🕒 晚間時段參考時刻表 (適用 19:20 抵達班機)</h4>
+            <div class="table-container">
+                <table class="transport-table">
+                    <tr><th>交通方式</th><th>成田機場(T1)</th><th>中轉/直達站</th><th>轉乘路線</th><th>抵達新宿時間</th></tr>
+                    <tr><td>選項 A: JR N'EX</td><td>20:44</td><td>(東京方面)新宿 (直達)</td><td>-</td><td>22:09</td></tr>
+                    <tr><td>選項 A: JR N'EX</td><td>21:44</td><td>(東京方面)新宿 (直達)</td><td>-</td><td>22:11</td></tr>
+                    <tr><td>選項 B: 利木津巴士</td><td>20:40</td><td>新宿西口(直達)</td><td>-</td><td>21:55</td></tr>
+                    <tr><td>選項 B: 利木津巴士</td><td>21:05</td><td>新宿西口(直達)</td><td>-</td><td>22:30</td></tr>
+                    <tr><td>選項 B: 利木津巴士</td><td>21:25</td><td>新宿西口(直達)</td><td>-</td><td>22:50</td></tr>
+                    <tr><td>選項 B: 利木津巴士</td><td>21:45</td><td>新宿西口(直達)</td><td>-</td><td>23:10</td></tr>
+                    <tr><td>選項 C: Skyliner</td><td>20:30 (京城上野)</td><td>日暮里(Nippori)<br>South Gate路標走</td><td>21:23 JR JY山手線<br>(池袋/新宿方面，內環線) 11號月台</td><td>21:45<br>(South East Exit 出站)</td></tr>
+                    <tr><td>選項 C: Skyliner</td><td>21:00 (京城上野)</td><td>日暮里(Nippori)<br>South Gate路標走</td><td>21:47 JR JY山手線<br>(池袋/新宿方面，內環線) 11號月台</td><td>22:09<br>(South East Exit 出站)</td></tr>
+                    <tr><td>選項 C: Skyliner</td><td>21:20 (京城上野)</td><td>日暮里(Nippori)<br>South Gate路標走</td><td>22:12 JR JY山手線<br>(池袋/新宿方面，內環線) 11號月台</td><td>22:34<br>(South East Exit 出站)</td></tr>
+                    <tr><td>選項 C: Skyliner</td><td>21:40 (京城上野)</td><td>日暮里(Nippori)<br>South Gate路標走</td><td>22:24 JR JY山手線<br>(池袋/新宿方面，內環線) 11號月台</td><td>22:46<br>(South East Exit 出站)</td></tr>
+                </table>
+            </div>
 
-        // --- API 配置與工具 (圖像生成 & Google Search) ---
-        const IMAGE_API_KEY = ""; // 留空，環境將自動提供
-        const IMAGE_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${IMAGE_API_KEY}`;
-        const GEMINI_API_KEY = ""; // 留空，環境將自動提供
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_API_KEY}`;
-        const MAX_RETRIES = 5;
-
-        // 格式化金額
-        const currencyFormatter = (amount, currencyCode) => new Intl.NumberFormat('zh-TW', {
-            style: 'currency',
-            currency: currencyCode === 'NTD' ? 'TWD' : 'JPY',
-            minimumFractionDigits: 0
-        }).format(amount);
-
-        // Find the index of an item by its unique ID
-        function findItemIndexById(dayKey, itemId) {
-            if (!window.itineraryData[dayKey]) return -1;
-            return window.itineraryData[dayKey].findIndex(item => item.id === itemId);
-        }
-
-        // 找到一個行程物件
-        function findItemById(dayKey, itemId) {
-            if (!window.itineraryData[dayKey]) return null;
-            return window.itineraryData[dayKey].find(item => item.id === itemId);
-        }
-
-        // 產生時間下拉選單選項 (00:00 到 23:30, 每 30 分鐘)
-        function generateTimeOptions() {
-            let options = '';
-            // 增加空白選項作為預設
-            options += `<option value="" selected>-- 選擇時間 --</option>`;
-            for (let h = 0; h < 24; h++) {
-                for (let m = 0; m < 60; m += 30) {
-                    const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-                    options += `<option value="${timeStr}">${timeStr}</option>`;
-                }
-            }
-            return options;
-        }
-        
-        // 渲染實時匯率顯示 (已修改為顯示 1 JPY = X NTD)
-        function renderLiveRateDisplay() {
-            document.getElementById('live-rate-value').textContent = `1 JPY ≈ ${window.JPY_TO_NTD_RATE.toFixed(3)} NTD`;
-            document.getElementById('auto-rate-value-jpy-to-ntd').textContent = window.JPY_TO_NTD_RATE.toFixed(3);
-            document.getElementById('auto-rate-value-ntd-to-jpy').textContent = window.NTD_TO_JPY_RATE.toFixed(2);
-        }
-        
-        /**
-         * 根據行程數據，獲取視覺呈現 (優先使用自訂圖像)
-         * @param {Object} item 行程項目物件
-         * @returns {string} HTML 字串 (<img> 或 <svg>)
-         */
-        function getVisualRepresentation(item) {
-            // 1. 優先使用自訂圖像
-            if (item.imageUrl) {
-                return `<img src="${item.imageUrl}" alt="行程插圖" class="w-16 h-16 object-cover rounded-xl shadow-lg">`;
-            }
+            <h4>詳細交通指引與購票步驟</h4>
             
-            // 2. 根據交通方式顯示圖示
-            const iconMap = {
-                '步行': 'walk',
-                '計程車': 'car',
-                'JR': 'train-front',
-                '私鐵': 'rail-symbol',
-                '巴士': 'bus',
-                '飛機': 'plane'
-            };
-            
-            const lucideIcon = iconMap[item.transport] || 'map-pin';
-            return `<div class="w-16 h-16 flex items-center justify-center bg-yellow-200 text-yellow-700 rounded-xl shadow-md border border-yellow-300">
-                        <i data-lucide="${lucideIcon}" class="w-8 h-8"></i>
-                    </div>`;
-        }
+            <h5>✅ 路線一：成田特快 N'EX (Narita Express)</h5>
+            <p><strong>1. 乘車地點與動線 (成田機場第一航廈 B1F)</strong></p>
+            <ul>
+                <li><strong>動線：</strong> 從 1F 入境大廳搭乘電梯或電扶梯下至 B1F 鐵道區。</li>
+                <li><strong>通過閘門：</strong> 找到 JR 線專用閘門，持車票或交通 IC 卡感應進入。</li>
+                <li><strong>確認月台：</strong> 依照電子看板指示，確認您的 N'EX 班次停靠在幾號月台。</li>
+                <li><strong>乘車：</strong> 前往指定月台，在對應的車廂號碼指示牌前等候。上車後，請將大型行李放置於車廂入口處的專用行李架並上鎖。</li>
+                <li><strong>列車方向：</strong> 搭乘開往「新宿 (Shinjuku)」方向的列車（N'EX 列車會在東京站分離，請確保您搭乘的是前往新宿的車廂）。</li>
+                <li><strong>抵達：</strong> 列車直達 JR 新宿站。</li>
+            </ul>
+            <div class="table-container">
+                <table>
+                    <tr><th>項目</th><th>購票地點</th><th>購票方法 (外國旅客優惠票)</th></tr>
+                    <tr><td>地點</td><td>地下 B1F 鐵道區，JR 東日本 區域。</td><td>出示護照，並指定搭乘日期與班次。</td></tr>
+                    <tr><td>人工櫃檯</td><td>1. JR 東日本旅行服務中心<br>2. JR 售票處 (綠色窗口)</td><td>購買「N'EX 東京去回車票」（5,000 日圓）。服務人員會協助劃位。</td></tr>
+                    <tr><td>自動售票機</td><td>JR 指定席售票機</td><td>選擇語言後，依指示購買 N'EX 優惠票，選擇目的地「新宿 (Shinjuku)」並劃位。</td></tr>
+                    <tr><td>網路預訂</td><td>Klook、KKday 等平台</td><td>線上購買後，持收到的 QR Code 到上述任一地點的指定席售票機（或櫃檯）兌換實體票券並劃位。</td></tr>
+                </table>
+            </div>
 
-        /**
-         * 計算單個行程項目的總花費 (轉換為 JPY)
-         * @param {Object} item - 行程項目物件
-         * @returns {number} 總花費 (JPY)
-         */
-        function calculateItemTotal(item) {
-            if (!item.expenses || item.expenses.length === 0) return 0;
-            
-            let totalJPY = 0;
-            item.expenses.forEach(expense => {
-                let amountInJPY = expense.amount;
-                if (expense.currency === 'NTD') {
-                    // 使用儲存的 NTD->JPY 匯率進行轉換，並四捨五入到個位
-                    amountInJPY = Math.round(expense.amount * window.NTD_TO_JPY_RATE); 
-                }
-                totalJPY += amountInJPY;
-            });
-            return totalJPY;
-        }
-
-        /**
-         * 計算所有行程的總花費 (JPY)
-         * @returns {number} 總花費 (JPY)
-         */
-        function calculateGrandTotal() {
-            let grandTotalJPY = 0;
-            for (const dayKey in window.itineraryData) {
-                if (window.itineraryData.hasOwnProperty(dayKey)) {
-                    window.itineraryData[dayKey].forEach(item => {
-                        grandTotalJPY += calculateItemTotal(item);
-                    });
-                }
-            }
-            return grandTotalJPY;
-        }
-
-        /**
-         * 更新儀表板上的總花費顯示
-         */
-        function updateDashboard() {
-            const grandTotalJPY = calculateGrandTotal();
-            // JPY 總額轉換為 NTD 時，四捨五入到個位
-            const grandTotalNTD = Math.round(grandTotalJPY * window.JPY_TO_NTD_RATE);
-            
-            let mainCost = 0;
-            let mainCurrency = '';
-
-            if (window.displayCurrency === 'JPY') {
-                mainCost = grandTotalJPY;
-                mainCurrency = 'JPY';
-            } else {
-                mainCost = grandTotalNTD;
-                mainCurrency = 'NTD';
-            }
-
-            document.getElementById('main-total-cost').textContent = currencyFormatter(mainCost, mainCurrency);
-            // 根據使用者要求，僅顯示主要幣別，移除次要幣別的概算顯示。
-            document.getElementById('sub-total-cost').textContent = ''; 
-        }
-
-        /**
-         * 切換顯示幣別
-         */
-        window.toggleCurrency = function() {
-            window.displayCurrency = window.displayCurrency === 'JPY' ? 'NTD' : 'JPY';
-            document.getElementById('toggle-currency-btn').textContent = `切換幣別 (${window.displayCurrency})`;
-            updateDashboard();
-        }
-
-        /**
-         * 渲染行程卡片列表
-         */
-        function renderItinerary() {
-            const container = document.getElementById('itinerary-content');
-            container.innerHTML = '';
-            
-            // 根據 currentDay 篩選數據
-            const currentDayKey = window.currentDay;
-            const items = window.itineraryData[currentDayKey] || [];
-            
-            // 如果沒有行程，顯示預設訊息
-            if (items.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center p-8 bg-yellow-100 rounded-xl border border-yellow-300 shadow-inner">
-                        <i data-lucide="sun-dim" class="w-10 h-10 mx-auto text-yellow-600"></i>
-                        <p class="text-lg text-gray-700 mt-3">第 ${currentDayKey.replace('day', '')} 天行程尚未規劃。</p>
-                        <p class="text-sm text-gray-500">點擊下方的「新增行程項目」開始規劃您的完美一天！</p>
-                    </div>
-                `;
-                // 重新渲染 Lucide 圖示
-                lucide.createIcons();
-                return;
-            }
-
-            // 按時間排序
-            items.sort((a, b) => {
-                if (!a.time) return 1;
-                if (!b.time) return -1;
-                return a.time.localeCompare(b.time);
-            });
-
-            // 渲染卡片
-            const html = items.map((item, index) => {
-                const totalJPY = calculateItemTotal(item);
-                
-                // 決定顯示的詳細資訊
-                let detailText = '';
-                if (item.transport === '飛機') {
-                    detailText = `
-                        <div class="flex items-center text-sm text-blue-600 mt-1">
-                            <i data-lucide="plane" class="w-4 h-4 mr-1"></i>
-                            <span class="font-medium">${item.flightNumber || '未知班次'}</span>
-                        </div>
-                    `;
-                } else if (item.transport !== '步行' && item.startPoint && item.endPoint) {
-                    detailText = `
-                        <div class="flex items-center text-sm text-gray-600 mt-1">
-                            <i data-lucide="map-pin" class="w-4 h-4 mr-1 text-yellow-600"></i>
-                            <span class="truncate">${item.startPoint || '起點'} → ${item.endPoint || '終點'}</span>
-                            ${item.startTime ? `<span class="ml-2 whitespace-nowrap">(${item.startTime} - ${item.endTime || '--'})</span>` : ''}
-                        </div>
-                    `;
-                } else if (item.transport) {
-                    detailText = `
-                        <div class="flex items-center text-sm text-gray-600 mt-1">
-                            <i data-lucide="footprints" class="w-4 h-4 mr-1 text-gray-500"></i>
-                            <span>交通方式: ${item.transport}</span>
-                        </div>
-                    `;
-                }
-
-                // *** 新增：Uber 叫車連結區塊 ***
-                let uberBlock = '';
-                if (item.transport === '計程車' && item.endPoint) {
-                    const uberLink = `https://m.uber.com/ul/?action=setPickup&dropoff[nickname]=${encodeURIComponent(item.endPoint)}`;
-                    uberBlock = `
-                        <div class="mt-3 pt-3 border-t border-gray-100">
-                            <a href="${uberLink}" target="_blank" class="w-full px-4 py-2 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition duration-150 flex items-center justify-center shadow-md text-sm">
-                                <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-1.85 18.067c-.255 0-.505-.078-.718-.236l-4.72-3.41c-.57-.413-.674-1.233-.243-1.804.432-.57 1.252-.673 1.823-.243l3.964 2.872V5.933c0-.663.538-1.2 1.2-1.2s1.2.537 1.2 1.2v11.011l3.964-2.872c.57-.413 1.39-.31 1.822.26.432.57.328 1.39-.243 1.804l-4.72 3.41c-.213.158-.463.236-.718.236z"/>
-                                </svg>
-                                立即開啟 Uber 叫車 (前往 ${item.endPoint})
-                            </a>
-                        </div>
-                    `;
-                }
-
-
-                return `
-                    <div class="p-4 bg-white rounded-xl shadow-lg border-l-4 border-yellow-500 transition hover:shadow-xl space-y-3">
-                        <!-- TOP ROW: Icon + Main Content -->
-                        <div class="flex space-x-4">
-                            <!-- 圖示/圖片區 --><div class="flex-shrink-0">
-                                ${getVisualRepresentation(item)}
-                            </div>
-                            
-                            <!-- 內容區 --><div class="flex-grow">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <p class="text-xs font-medium text-gray-500">${item.time || '--:--'} (${DATE_MAP[currentDayKey]})</p>
-                                        <h3 class="text-lg font-bold text-gray-800 cursor-pointer activity-link" 
-                                            onclick="editItem('${item.id}', '${currentDayKey}')">
-                                            ${item.activity}
-                                        </h3>
-                                        ${detailText}
-                                    </div>
-                                    <!-- 地圖按鈕 (費用已移至下方) --><div class="flex flex-col items-end space-y-1">
-                                        ${item.mapLink ? `<a href="${item.mapLink}" target="_blank" class="text-blue-500 hover:text-blue-700 transition" title="開啟地圖">
-                                            <i data-lucide="map" class="w-5 h-5"></i>
-                                        </a>` : ''}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- SUMMARY & ACTIONS BLOCK (新結構: 費用 + 按鈕) -->
-                        <div class="border-t border-gray-100 pt-3">
-                            <!-- 費用顯示 (移到下方) -->
-                            ${totalJPY > 0 ? `
-                                <div class="flex justify-between items-center mb-3 p-2 bg-red-50 rounded-lg">
-                                    <span class="text-sm font-semibold text-gray-700 flex items-center">
-                                        <i data-lucide="yen-sign" class="w-4 h-4 mr-1 text-red-600"></i>
-                                        花費總計:
-                                    </span>
-                                    <span class="text-lg font-extrabold text-red-600">${currencyFormatter(totalJPY, 'JPY')}</span>
-                                </div>
-                            ` : ''}
-                            
-                            <!-- *** 新增的 Uber Block *** -->
-                            ${uberBlock}
-
-                            <!-- 動作按鈕 -->
-                            <div class="flex flex-wrap md:flex-row gap-2 mt-3">
-                                <button onclick="openImageManager('${item.id}', '${currentDayKey}')" 
-                                    class="flex-1 min-w-[30%] px-3 py-2 bg-yellow-100 text-yellow-700 font-medium rounded-lg hover:bg-yellow-200 transition text-sm flex items-center justify-center shadow-sm">
-                                    <i data-lucide="image" class="w-4 h-4 mr-1"></i> 管理插圖
-                                </button>
-                                <button onclick="editItem('${item.id}', '${currentDayKey}')" 
-                                    class="flex-1 min-w-[30%] px-3 py-2 bg-blue-100 text-blue-700 font-medium rounded-lg hover:bg-blue-200 transition text-sm flex items-center justify-center shadow-sm">
-                                    <i data-lucide="pencil" class="w-4 h-4 mr-1"></i> 編輯行程
-                                </button>
-                                <button onclick="deleteItem('${item.id}', '${currentDayKey}')" 
-                                    class="flex-1 min-w-[30%] px-3 py-2 bg-red-100 text-red-700 font-medium rounded-lg hover:bg-red-200 transition text-sm flex items-center justify-center shadow-sm">
-                                    <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> 刪除
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            container.innerHTML = html;
-            lucide.createIcons(); // 重新渲染 Lucide 圖示
-            updateDashboard(); // 重新計算並更新總花費
-        }
-
-        /**
-         * 渲染行程分頁導航
-         */
-        function renderTabs() {
-            const tabContainer = document.getElementById('tab-container');
-            tabContainer.innerHTML = '';
-            
-            const days = Object.keys(DATE_MAP);
-            const tabsHtml = days.map(dayKey => {
-                const isActive = dayKey === window.currentDay;
-                const activeClass = isActive 
-                    ? 'bg-yellow-500 text-white shadow-md' 
-                    : 'bg-white text-gray-700 hover:bg-yellow-100';
-                
-                const dayNumber = dayKey.replace('day', '');
-                
-                return `
-                    <button id="tab-${dayKey}" onclick="setActiveTab('${dayKey}')" 
-                            class="flex-shrink-0 px-4 py-2 text-sm font-semibold rounded-lg transition duration-150 ${activeClass}">
-                        Day ${dayNumber} <span class="text-xs font-light ml-1">(${DATE_MAP[dayKey]})</span>
-                    </button>
-                `;
-            }).join('');
-            
-            tabContainer.innerHTML = tabsHtml;
-        }
-
-        /**
-         * 設定活動分頁
-         * @param {string} dayKey - 要切換到的 dayKey (e.g., 'day1')
-         */
-        window.setActiveTab = function(dayKey) {
-            window.currentDay = dayKey;
-            renderTabs();
-            renderItinerary();
-        }
-
-        /**
-         * 儲存資料到 Firestore
-         */
-        async function saveItineraryData() {
-            if (!db || !userId) {
-                console.warn('Firestore 或使用者 ID 尚未準備好，無法儲存。');
-                return;
-            }
-            
-            const docRef = doc(db, 'artifacts', appId, 'users', userId, 'itineraries', 'trip_data');
-            
-            try {
-                // 將資料序列化，以避免 Firestore 儲存複雜物件結構的問題
-                const dataToSave = {
-                    itineraryData: JSON.stringify(window.itineraryData),
-                    lastUpdated: new Date().toISOString()
-                };
-                await setDoc(docRef, dataToSave);
-                console.log('行程資料已儲存到 Firestore！');
-            } catch (error) {
-                console.error('儲存行程資料失敗:', error);
-            }
-        }
-
-        /**
-         * 從 Firestore 載入資料並設置實時監聽
-         */
-        function loadItineraryData() {
-            if (!db || !userId) {
-                console.warn('Firestore 或使用者 ID 尚未準備好，無法載入。');
-                return;
-            }
-
-            const docRef = doc(db, 'artifacts', appId, 'users', userId, 'itineraries', 'trip_data');
-
-            onSnapshot(docRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    try {
-                        // 嘗試解析儲存的 JSON 字串
-                        window.itineraryData = JSON.parse(data.itineraryData);
-                        console.log('行程資料已從 Firestore 載入。');
-                    } catch (e) {
-                        console.error('解析 Firestore 資料失敗，使用空資料。', e);
-                        window.itineraryData = {};
-                    }
-                } else {
-                    console.log('Firestore 中無行程資料。');
-                    if (!window.initialDataLoaded) {
-                        // 如果沒有數據且是第一次載入，則設置初始行程 (可選)
-                        setupInitialData();
-                        window.initialDataLoaded = true;
-                    }
-                }
-                
-                // 渲染 UI
-                renderTabs();
-                renderItinerary();
-                document.getElementById('loading').classList.add('hidden');
-                lucide.createIcons(); // 重新渲染 Lucide 圖示
-            }, (error) => {
-                console.error('監聽行程資料失敗:', error);
-                document.getElementById('loading').classList.add('hidden');
-            });
-        }
-        
-        /**
-         * 設置初始行程數據 (如果 Firestore 中沒有資料)
-         */
-        function setupInitialData() {
-            // 初始化所有 Day Key 的空陣列
-            Object.keys(DATE_MAP).forEach(dayKey => {
-                window.itineraryData[dayKey] = [];
-            });
-
-            // 匯入範例數據 (Day 1)
-            window.itineraryData['day1'].push({
-                id: crypto.randomUUID(),
-                dayKey: 'day1',
-                activity: '東京成田機場 (NRT) 降落',
-                time: '15:00',
-                transport: '飛機',
-                flightNumber: 'JL802',
-                expenses: [],
-                mapLink: 'https://maps.app.goo.gl/r6fM7d2W3hT5vJkP9'
-            }, {
-                id: crypto.randomUUID(),
-                dayKey: 'day1',
-                activity: '搭乘 Narita Express 前往新宿',
-                time: '16:30',
-                transport: 'JR',
-                startPoint: '成田機場',
-                startTime: '16:30',
-                endPoint: '新宿站',
-                endTime: '17:50',
-                expenses: [{ 
-                    id: crypto.randomUUID(), 
-                    amount: 3250, 
-                    currency: 'JPY', 
-                    description: 'N\'EX 車票', 
-                    rate: window.NTD_TO_JPY_RATE 
-                }]
-            }, {
-                id: crypto.randomUUID(),
-                dayKey: 'day1',
-                activity: '新宿飯店 Check-in',
-                time: '18:30',
-                transport: '步行',
-                expenses: [{ 
-                    id: crypto.randomUUID(), 
-                    amount: 50000, 
-                    currency: 'JPY', 
-                    description: '4 晚住宿費用', 
-                    rate: window.NTD_TO_JPY_RATE 
-                }]
-            });
-            
-            saveItineraryData(); // 儲存初始數據
-        }
-        
-        // --- 表單處理 (Form Handling) ---
-
-        /**
-         * 顯示行程新增/編輯表單
-         * @param {string} [itemId=null] - 欲編輯的行程 ID
-         * @param {string} [dayKey=window.currentDay] - 行程所屬的 DayKey
-         */
-        window.openForm = function(itemId = null, dayKey = window.currentDay) {
-            const form = document.getElementById('item-form');
-            form.reset();
-            
-            // 確保時間選項已生成
-            if (!document.getElementById('time').options.length) {
-                const timeOptions = generateTimeOptions();
-                document.getElementById('time').innerHTML = timeOptions;
-                document.getElementById('start-time').innerHTML = timeOptions;
-                document.getElementById('end-time').innerHTML = timeOptions;
-            }
-
-            // 設置當前 Day
-            window.editingDayKey = dayKey;
-            document.getElementById('current-day-label').textContent = dayKey.replace('day', '');
-
-            // 隱藏/顯示交通細節 (預設為隱藏)
-            document.getElementById('flight-inputs').classList.add('hidden');
-            document.getElementById('transit-inputs').classList.remove('hidden');
-
-            if (itemId) {
-                // 編輯模式
-                window.editingItemId = itemId;
-                document.getElementById('form-title').textContent = '編輯行程項目';
-                const item = findItemById(dayKey, itemId);
-
-                if (item) {
-                    document.getElementById('activity').value = item.activity || '';
-                    document.getElementById('time').value = item.time || '';
-                    document.getElementById('transport').value = item.transport || '步行';
-                    document.getElementById('map-link').value = item.mapLink || '';
-
-                    // 交通細節
-                    document.getElementById('start-point').value = item.startPoint || '';
-                    document.getElementById('start-time').value = item.startTime || '';
-                    document.getElementById('end-point').value = item.endPoint || '';
-                    document.getElementById('end-time').value = item.endTime || '';
-                    
-                    // 飛機專用欄位
-                    document.getElementById('flight-number').value = item.flightNumber || '';
-                    
-                    // 觸發 transport change 檢查
-                    handleTransportChange();
-                    
-                    // 設置花費摘要
-                    const totalJPY = calculateItemTotal(item);
-                    document.getElementById('current-expense-summary').textContent = `管理花費細項 (目前: 總計 ${currencyFormatter(totalJPY, 'JPY')})`;
-                }
-            } else {
-                // 新增模式
-                window.editingItemId = null;
-                document.getElementById('form-title').textContent = '新增行程項目';
-                document.getElementById('current-expense-summary').textContent = `管理花費細項 (目前: 總計 JPY 0)`;
-                // 預設交通方式
-                document.getElementById('transport').value = '步行';
-                handleTransportChange();
-            }
-
-            // 清除錯誤訊息
-            document.getElementById('form-error-message').classList.add('hidden');
-            
-            document.getElementById('item-form-container').classList.remove('hidden');
-        }
-
-        /**
-         * 隱藏行程表單
-         */
-        window.hideForm = function() {
-            document.getElementById('item-form-container').classList.add('hidden');
-        }
-        
-        /**
-         * 更新 Uber 按鈕的連結和顯示文字
-         */
-        function updateUberButton() {
-            const endPoint = document.getElementById('end-point').value.trim();
-            const uberLinkButton = document.getElementById('uber-link-button');
-            const destinationText = document.getElementById('uber-destination-text');
-            
-            if (endPoint) {
-                // Uber Universal Link 格式，使用 nickname (地址名稱) 作為目的地
-                const uberLink = `https://m.uber.com/ul/?action=setPickup&dropoff[nickname]=${encodeURIComponent(endPoint)}`;
-                uberLinkButton.href = uberLink;
-                destinationText.textContent = endPoint;
-                uberLinkButton.classList.remove('disabled:opacity-50');
-            } else {
-                // 如果沒有終點，禁用按鈕
-                uberLinkButton.href = '#';
-                destinationText.textContent = '未設定';
-                uberLinkButton.classList.add('disabled:opacity-50');
-            }
-        }
-        
-        /**
-         * 處理交通方式變更時的表單欄位切換
-         */
-        function handleTransportChange() {
-            const transport = document.getElementById('transport').value;
-            const flightInputs = document.getElementById('flight-inputs');
-            const transitInputs = document.getElementById('transit-inputs');
-            const uberContainer = document.getElementById('uber-button-container');
-
-            if (transport === '飛機') {
-                flightInputs.classList.remove('hidden');
-                transitInputs.classList.add('hidden');
-                uberContainer.classList.add('hidden'); // 飛機時隱藏 Uber
-            } else {
-                flightInputs.classList.add('hidden');
-                transitInputs.classList.remove('hidden');
-                // 處理計程車按鈕顯示
-                if (transport === '計程車') {
-                    uberContainer.classList.remove('hidden');
-                    updateUberButton(); // 立即更新 Uber 按鈕狀態
-                } else {
-                    uberContainer.classList.add('hidden');
-                }
-            }
-        }
-        
-        /**
-         * 表單提交處理函式 (新增或編輯)
-         */
-        async function submitFormHandler(event) {
-            event.preventDefault();
-            
-            const activity = document.getElementById('activity').value.trim();
-            const time = document.getElementById('time').value;
-            const transport = document.getElementById('transport').value;
-            const mapLink = document.getElementById('map-link').value.trim();
-
-            if (!activity) {
-                showFormError('請輸入行程名稱/地點。');
-                return;
-            }
-            
-            // 收集所有欄位數據
-            let newItem = {
-                dayKey: window.editingDayKey,
-                activity: activity,
-                time: time,
-                transport: transport,
-                mapLink: mapLink
-            };
-
-            // 交通細節/飛機細節
-            if (transport === '飛機') {
-                newItem.flightNumber = document.getElementById('flight-number').value.trim();
-                // 清除其他交通細節
-                newItem.startPoint = ''; newItem.startTime = ''; newItem.endPoint = ''; newItem.endTime = '';
-            } else {
-                newItem.startPoint = document.getElementById('start-point').value.trim();
-                newItem.startTime = document.getElementById('start-time').value;
-                newItem.endPoint = document.getElementById('end-point').value.trim();
-                newItem.endTime = document.getElementById('end-time').value;
-                // 清除飛機細節
-                newItem.flightNumber = '';
-            }
-            
-            // 處理新增或編輯
-            const dayKey = window.editingDayKey;
-            
-            if (window.editingItemId) {
-                // 編輯模式
-                const index = findItemIndexById(dayKey, window.editingItemId);
-                if (index !== -1) {
-                    // 保留舊的 expenses 和 imageUrl
-                    const existingItem = window.itineraryData[dayKey][index];
-                    newItem.id = window.editingItemId;
-                    newItem.expenses = existingItem.expenses || [];
-                    newItem.imageUrl = existingItem.imageUrl || ''; 
-                    window.itineraryData[dayKey][index] = newItem;
-                    console.log('行程項目已更新。', newItem);
-                } else {
-                    console.error('找不到要編輯的行程項目。');
-                    showFormError('找不到要編輯的行程項目。');
-                    return;
-                }
-            } else {
-                // 新增模式
-                newItem.id = crypto.randomUUID();
-                newItem.expenses = [];
-                newItem.imageUrl = '';
-                
-                if (!window.itineraryData[dayKey]) {
-                    window.itineraryData[dayKey] = [];
-                }
-                window.itineraryData[dayKey].push(newItem);
-                console.log('行程項目已新增。', newItem);
-            }
-
-            await saveItineraryData(); // 儲存到雲端
-            renderItinerary(); // 重新渲染列表
-            hideForm(); // 關閉表單
-        }
-
-        /**
-         * 顯示表單錯誤訊息
-         * @param {string} message 
-         */
-        function showFormError(message) {
-            document.getElementById('form-error-text').textContent = message;
-            document.getElementById('form-error-message').classList.remove('hidden');
-        }
-
-        /**
-         * 編輯行程項目的快捷方式
-         */
-        window.editItem = function(itemId, dayKey) {
-            openForm(itemId, dayKey);
-        }
-
-        /**
-         * 刪除行程項目
-         */
-        window.deleteItem = async function(itemId, dayKey) {
-            // 使用自定義 modal 替代 confirm (這裡保留 confirm 簡化，但在生產環境應使用 custom modal)
-            if (!confirm(`確定要刪除此行程項目嗎？這將無法復原。`)) {
-                return;
-            }
-            
-            const index = findItemIndexById(dayKey, itemId);
-            if (index !== -1) {
-                window.itineraryData[dayKey].splice(index, 1);
-                await saveItineraryData();
-                renderItinerary();
-                console.log('行程項目已刪除。');
-            } else {
-                console.error('找不到要刪除的行程項目。');
-            }
-        }
-        
-        // --- 花費管理 (Expense Manager) ---
-        
-        /**
-         * 開啟花費管理模組
-         */
-        window.openExpenseManager = function() {
-            // 確保是在編輯模式下才能開啟花費管理
-            if (!window.editingItemId || !window.editingDayKey) {
-                console.error('必須先開啟一個行程編輯表單才能管理花費。');
-                return;
-            }
-
-            const item = findItemById(window.editingDayKey, window.editingItemId);
-            if (!item) return;
-
-            // 設定標題
-            document.getElementById('current-expense-activity').textContent = item.activity;
-            
-            // 渲染列表
-            renderExpenses(item);
-            
-            // 顯示模組
-            document.getElementById('expense-manager-container').classList.remove('hidden');
-        }
-
-        /**
-         * 隱藏花費管理模組
-         */
-        window.hideExpenseManager = function() {
-            // 自動儲存數據並更新總花費
-            saveItineraryData(); 
-            updateDashboard();
-            
-            document.getElementById('expense-manager-container').classList.add('hidden');
-        }
-        
-        /**
-         * 渲染花費列表
-         * @param {Object} item - 行程項目物件
-         */
-        function renderExpenses(item) {
-            const list = document.getElementById('expenses-list');
-            const totalDisplay = document.getElementById('expense-item-total');
-            const noMessage = document.getElementById('no-expenses-message');
-            
-            list.innerHTML = '';
-            
-            if (!item.expenses || item.expenses.length === 0) {
-                noMessage.classList.remove('hidden');
-                totalDisplay.textContent = `總計 JPY 0`;
-                return;
-            }
-
-            noMessage.classList.add('hidden');
-            
-            const totalJPY = calculateItemTotal(item);
-            totalDisplay.textContent = `總計 ${currencyFormatter(totalJPY, 'JPY')}`;
-
-            list.innerHTML = item.expenses.map(expense => {
-                // 計算 NTD 轉換後的 JPY 金額，並四捨五入到個位
-                const convertedJPY = Math.round(expense.amount * window.NTD_TO_JPY_RATE);
-                
-                return `
-                <li class="flex justify-between items-center p-2 bg-white rounded-lg border border-gray-200 shadow-sm">
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-800">${expense.description}</p>
-                        <p class="text-xs text-gray-500">
-                            ${currencyFormatter(expense.amount, expense.currency)} 
-                            <span class="font-bold text-red-600">${expense.currency}</span>
-                            ${expense.currency === 'NTD' ? `(換算: ${currencyFormatter(convertedJPY, 'JPY')})` : ''}
-                        </p>
-                    </div>
-                    <button onclick="deleteExpense('${expense.id}')" class="ml-4 text-red-500 hover:text-red-700 transition">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
+            <h5>✅ 路線二：京成 Skyliner + JR 山手線</h5>
+            <p><strong>1. 乘車地點與動線 (成田機場第一航廈 B1F)</strong></p>
+            <ul>
+                <li><strong>動線：</strong> 從 1F 入境大廳下至 B1F 鐵道區。</li>
+                <li><strong>通過閘門：</strong> 找到 京成線專用閘門，持車票感應進入。</li>
+                <li><strong>確認月台：</strong> 依照指示牌前往 Skyliner 專用月台，搭乘開往「京成上野」方向的列車。</li>
+                <li><strong>第一段抵達：</strong> 抵達 日暮里站 或 京成上野站。</li>
+                <li><strong>轉乘 JR (推薦日暮里轉乘)：</strong>
+                    <ul>
+                        <li>日暮里站： 沿著指示牌，從京成線轉乘口出站（可使用交通 IC 卡補票）或出站後再進入 JR 線閘門。</li>
+                        <li>乘車： 搭乘 JR 山手線 (Yamanote Line) 內環線（往池袋・新宿方向），直達 JR 新宿站。</li>
+                    </ul>
                 </li>
-            `}).join('');
-            
-            lucide.createIcons();
-            
-            // 更新花費管理按鈕的總結 (在主表單上)
-            document.getElementById('current-expense-summary').textContent = `管理花費細項 (目前: 總計 ${currencyFormatter(totalJPY, 'JPY')})`;
-        }
+            </ul>
+            <div class="table-container">
+                <table>
+                    <tr><th>項目</th><th>購票地點</th><th>購票方法 (外國旅客優惠票)</th></tr>
+                    <tr><td>地點</td><td>地下 B1F 鐵道區，京成電鐵 (Keisei) 區域。</td><td>出示護照，並指定搭乘日期與班次。</td></tr>
+                    <tr><td>人工櫃檯</td><td>京成 Skyliner 售票窗口</td><td>購買 Skyliner 單程/來回優惠票 (單程約 2,310 日圓)。</td></tr>
+                    <tr><td>自動售票機</td><td>Skyliner 自動售票機</td><td>設有中文介面，選擇目的地，購買 Skyliner 車票並劃位。</td></tr>
+                    <tr><td>網路預訂</td><td>官方 e-ticket 網站或旅遊平台</td><td>線上購買後，持收到的 QR Code 至上述地點的櫃檯或指定自動售票機兌換實體票券並劃位。</td></tr>
+                </table>
+            </div>
+
+            <h5>✅ 路線三：利木津巴士 (Limousine Bus)</h5>
+            <p><strong>1. 乘車地點與動線 (成田機場第一航廈 1F 航廈外)</strong></p>
+            <ul>
+                <li><strong>動線：</strong> 在 1 樓入境大廳購票後，走出航廈大門，前往櫃檯指示的巴士站牌 (例如 1 號、3 號站牌等)。</li>
+                <li><strong>行李託運：</strong> 在站牌處，將車票和行李交給工作人員。他們會貼上行李牌，並將行李存根聯交還給您。</li>
+                <li><strong>上車：</strong> 確認巴士車頭顯示為「新宿」或您指定的飯店方向後上車。(JR 新宿站東口、BUSTA SHINJUKU (新宿高速巴士總站)</li>
+            </ul>
+            <div class="table-container">
+                <table>
+                    <tr><th>項目</th><th>購票地點</th><th>購票方法</th></tr>
+                    <tr><td>地點</td><td>1 樓入境大廳 (非 B1F 鐵道區)</td><td>告知櫃檯人員欲前往的新宿飯店名稱或目的地，並購買車票。</td></tr>
+                    <tr><td>人工櫃檯</td><td>利木津巴士服務櫃檯 (橘色 Limousine Bus 標誌)</td><td>可使用現金、信用卡或交通 IC 卡付款。服務人員會告知乘車處。</td></tr>
+                    <tr><td>網路預訂</td><td>Klook、KKday 等平台</td><td>線上購買後，至櫃檯出示憑證兌換實體票券。</td></tr>
+                </table>
+            </div>
+
+            <h4>🍜 晚餐推薦 (新宿深夜美食 - 22:30 後適用)</h4>
+            <p>🚨 <strong>Afuri 營業時間提醒:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Afuri+Ramen+Shinjuku" target="_blank" class="map-link">Afuri 拉麵</a> 新宿店通常營業至深夜 (例如 01:00 AM)，但建議當日再次確認分店的關門時間。若為 22:30 抵達，仍有機會前往。</p>
+            <p>除了 Afuri 之外，以下是幾間深夜 22:30 之後仍營業、且深受旅客喜愛的新宿美食選擇：</p>
+            <ul>
+                <li><a href="https://www.google.com/maps/search/?api=1&query=一蘭+新宿中央東口店" target="_blank" class="map-link">一蘭 新宿中央東口店</a> (經典豚骨拉麵，通常為 24 小時營業，最為穩妥)。</li>
+                <li><a href="https://www.google.com/maps/search/?api=1&query=磯丸水產+新宿三丁目店" target="_blank" class="map-link">磯丸水產 新宿三丁目店</a> (24 小時營業的海鮮居酒屋，適合想吃熱炒、海鮮的旅客)。</li>
+                <li><a href="https://www.google.com/maps/search/?api=1&query=五ノ神製作所" target="_blank" class="map-link">五ノ神製作所</a> (以濃郁蝦味沾麵聞名，營業時間多半至 23:00 或更晚，值得一試)。</li>
+                <li><a href="https://www.google.com/maps/search/?api=1&query=餃子の福包+新宿店" target="_blank" class="map-link">餃子の福包 新宿店</a> (平價美味的餃子專賣店，適合宵夜，多數分店營業至 01:00 AM 左右)。</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div id="day2" class="day-block">
+        <div class="day-header" onclick="toggleDay(this)">DAY 2: 12/14 (日) 🚌 河口湖 - 忠靈塔與富士山站周邊 <span>▼</span></div>
+        <div class="day-body">
+            <h4>✅ 行程概要 (更新):</h4>
+            <ul>
+                <li>09:35 新宿出發 (高速巴士 - Busta 4F)。</li>
+                <li>11:20 抵達河口湖站，寄放行李。</li>
+                <li>11:30 午餐: 河口湖站周邊 (不動/富士山食堂 <a href="https://www.google.com/maps/search/?api=1&query=富士山食堂" target="_blank" class="map-link">地圖</a> )。</li>
+                <li>12:27 搭乘富士急行線 → 下吉田站 (12:40 抵達)。</li>
+                <li>13:00 步行至 <a href="https://www.google.com/maps/search/?api=1&query=新倉富士淺間神社" target="_blank" class="map-link">新倉富士淺間神社</a> (忠靈塔) 參拜與攝影。</li>
+                <li>16:40 搭乘富士急行線 → 河口湖站 (16:53 抵達)。</li>
+                <li>17:30 辦理入住 <a href="https://www.google.com/maps/search/?api=1&query=The+Noborisaka+village" target="_blank" class="map-link">The Noborisaka village</a>。</li>
+                <li>19:30 晚餐 (住宿處或富士山站周邊)。</li>
+                <li>新增 晚餐The Noborisaka village步行10分鐘內美食推薦5間並附上GOOGLE MPA連結</li>
+            </ul>
+
+            <h4>🚌 交通規劃：新宿 → 河口湖</h4>
+            <div class="table-container">
+                <table class="transport-table">
+                    <tr><th>路線</th><th>搭車時間</th><th>乘車地點</th><th>抵達時間</th><th>抵達地點</th><th>乘車時間</th><th>備註</th></tr>
+                    <tr><td>高速巴士<br>(新宿-富士五湖)</td><td>09:35</td><td>新宿 Busta (4F)/ B區藍色<br>(1407 1號車)</td><td>11:20</td><td>河口湖站</td><td>約 1小時 45分</td><td><a href="#" class="map-link">新宿高速巴士總站（Busta新宿）完全攻略</a></td></tr>
+                </table>
+            </div>
+
+            <h4>⛩️ 河口湖站 ⇌ <a href="https://www.google.com/maps/search/?api=1&query=新倉富士淺間神社" target="_blank" class="map-link">新倉富士淺間神社</a> (忠靈塔) 交通與時刻表</h4>
+            <p>從河口湖站前往忠靈塔需搭乘富士急行線列車至「下吉田站」再步行。</p>
+            <div class="table-container">
+                <table class="transport-table">
+                    <tr><th>路線</th><th>搭車時間</th><th>乘車地點</th><th>抵達時間</th><th>抵達地點</th><th>乘車時間</th><th>票價</th></tr>
+                    <tr><td>富士急行線<br>(普通車/大月方向)</td><td>12:27</td><td>河口湖站</td><td>12:40</td><td>下吉田站</td><td>13 分鐘</td><td>310 JPY</td></tr>
+                    <tr><td>富士急行線<br>(普通車/河口湖方向)</td><td>16:40</td><td>下吉田站</td><td>16:53</td><td>河口湖站</td><td>13 分鐘</td><td>310 JPY</td></tr>
+                </table>
+            </div>
+
+            <h4>🧳 河口湖站 行李寄放</h4>
+            <p>寄放: 站內外皆有投幣式置物櫃，或利用人工行李寄放服務。</p>
+
+            <h4>🧳 河口湖站(午餐)</h4>
+            <div class="table-container">
+                <table>
+                    <tr><th>#</th><th>餐廳名稱</th><th>地點 (靠近的景點)</th><th>類型與特色</th><th>價格</th><th>Google Map 連結</th></tr>
+                    <tr><td>1.</td><td>不動茶屋 (Houtou Fudou) 河口湖站前店</td><td>河口湖站前</td><td>餺飥麵 (Houtou)。山梨縣必吃，濃郁湯頭與極粗蔬菜麵條。(山梨特色麵食)</td><td>1,500 - 2,500</td><td><a href="https://www.google.com/maps/search/?api=1&query=Houtou+Fudou+Kawaguchiko+Station" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>2.</td><td>河口湖烤肉 (焼肉)</td><td>河口湖站周邊</td><td>日式燒肉。提供富士吉田市當地的優質肉品，適合喜歡豐盛肉食的旅客。(肉類/在地食材)</td><td>4,000 - 7,000</td><td><a href="https://www.google.com/maps/search/?api=1&query=Kawaguchiko+Yakiniku" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>3.</td><td>M's KITCHEN</td><td>河口湖站周邊</td><td>日式定食/簡餐。提供多樣化日式定食，如炸雞塊、烤魚等，經濟實惠的日常選擇。(日式定食)</td><td>1,000 - 2,000</td><td><a href="https://www.google.com/maps/search/?api=1&query=M's+KITCHEN+Kawaguchiko" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>4.</td><td>富士山餃子</td><td>河口湖站周邊</td><td>餃子與拉麵。提供日式煎餃、水餃和拉麵，當地人氣的B級美食。(B級美食)</td><td>800 - 1,500</td><td><a href="https://www.google.com/maps/search/?api=1&query=Fujiyama+Gyoza" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>5.</td><td>海鮮居酒屋 富士山笑笑</td><td>河口湖站周邊</td><td>海鮮居酒屋。提供新鮮的生魚片、烤魚、串燒，適合想體驗日本夜生活和在地小酌。(居酒屋/海鮮)</td><td>3,500 - 5,500</td><td><a href="https://www.google.com/maps/search/?api=1&query=Seafood+Izakaya+Fujiyama+Warawara" target="_blank" class="map-link">Google 地圖</a></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div id="day3" class="day-block">
+        <div class="day-header" onclick="toggleDay(this)">DAY 3: 12/15 (一) 🚍 河口湖周遊與西湖根場 (使用 1DayPass) <span>▼</span></div>
+        <div class="day-body">
+            <h4>✅ 行程概要:</h4>
+            <ul>
+                <li>09:00 前往河口湖站購買並啟用 1DayPass。</li>
+                <li>09:10 搭乘綠線巴士 (G-Line) → <a href="https://www.google.com/maps/search/?api=1&query=西湖療癒之里根場" target="_blank" class="map-link">西湖療癒之里根場</a> (09:50 抵達)。</li>
+                <li>新增午餐 西湖療癒之里根場內美食推薦5間並附上GOOGLE MPA連結</li>
+                <li>12:10 搭乘綠線巴士返程 → 河口湖站 (12:45 抵達)。</li>
+                <li>13:00 轉搭紅線巴士 (R-Line) → <a href="https://www.google.com/maps/search/?api=1&query=大石公園" target="_blank" class="map-link">大石公園</a> (13:27 抵達，逆富士)。</li>
+                <li>14:00 搭乘紅線巴士 → <a href="https://www.google.com/maps/search/?api=1&query=音樂盒之森美術館" target="_blank" class="map-link">音樂盒之森美術館</a> (14:04 抵達)。</li>
+                <li>14:45 搭乘紅線巴士 → <a href="https://www.google.com/maps/search/?api=1&query=河口湖香草館" target="_blank" class="map-link">河口湖香草館</a> (15:00 抵達)。</li>
+                <li>16:00 搭乘紅線巴士 → 河口湖站 (16:07 抵達)。</li>
+                <li>18:30 晚餐。</li>
+                <li>新增晚餐河口湖車站步行10分鐘內美食推薦5間並附上GOOGLE MPA連結</li>
+            </ul>
+
+            <h4>🚌 深度遊交通與時間規劃 (參考時刻表)</h4>
+            <div class="table-container">
+                <table class="transport-table">
+                    <tr><th>路線</th><th>搭車時間</th><th>乘車地點</th><th>抵達時間</th><th>抵達地點</th><th>乘車時間</th><th>票價</th></tr>
+                    <tr><td>綠線巴士 (G-Line) 往路</td><td>09:10 (10:10)</td><td>河口湖站 (G1)</td><td>09:50 (10:50)</td><td><a href="https://www.google.com/maps/search/?api=1&query=西湖療癒之里根場" target="_blank" class="map-link">西湖療癒之里根場</a> (G15)</td><td>40 分鐘</td><td>購買 1 Day Pass (1,500 JPY)</td></tr>
+                    <tr><td>綠線巴士 (G-Line) 復路</td><td>12:10 (13:10)</td><td><a href="https://www.google.com/maps/search/?api=1&query=西湖療癒之里根場" target="_blank" class="map-link">西湖療癒之里根場</a> (G15)</td><td>12:45 (13:50)</td><td>河口湖站 (G1)</td><td>40 分鐘</td><td>購買 1 Day Pass (1,500 JPY)</td></tr>
+                    <tr><td>紅線巴士 (R-Line) 往路</td><td>13:00 (14:00)</td><td>河口湖站 (R1)</td><td>13:27 (14:30)</td><td><a href="https://www.google.com/maps/search/?api=1&query=大石公園" target="_blank" class="map-link">大石公園</a> (R20)</td><td>30 分鐘</td><td>購買 1 Day Pass (1,500 JPY)</td></tr>
+                    <tr><td>紅線巴士 (R-Line) 復路</td><td>14:00</td><td><a href="https://www.google.com/maps/search/?api=1&query=大石公園" target="_blank" class="map-link">大石公園</a> (R20)</td><td>14:04</td><td><a href="https://www.google.com/maps/search/?api=1&query=音樂盒之森美術館" target="_blank" class="map-link">音樂盒之森美術館</a> (R17)</td><td>5 分鐘 (步行34 分)</td><td>購買 1 Day Pass (1,500 JPY)</td></tr>
+                    <tr><td>紅線巴士 (R-Line) 復路</td><td>14:45 (15:45)</td><td><a href="https://www.google.com/maps/search/?api=1&query=音樂盒之森美術館" target="_blank" class="map-link">音樂盒之森美術館</a> (R17)</td><td>15:00 (16:00)</td><td><a href="https://www.google.com/maps/search/?api=1&query=河口湖香草館" target="_blank" class="map-link">河口湖香草館</a> (R15)</td><td>15 分鐘</td><td>購買 1 Day Pass (1,500 JPY)</td></tr>
+                    <tr><td>紅線巴士 (R-Line) 復路</td><td>16:00</td><td><a href="https://www.google.com/maps/search/?api=1&query=河口湖香草館" target="_blank" class="map-link">河口湖香草館</a> (R15)</td><td>16:07</td><td>河口湖站 (R1)</td><td>7分鐘 (步行22 分)</td><td>購買 1 Day Pass (1,500 JPY)</td></tr>
+                </table>
+            </div>
+
+            <h4>🍽️ 西湖療癒之里根場（午餐）</h4>
+            <div class="table-container">
+                <table>
+                    <tr><th>#</th><th>餐廳名稱/類型</th><th>特色美食 (在地類別)</th><th>價格區間 (約)</th><th>Google Map 連結</th></tr>
+                    <tr><td>1.</td><td>食事処 根場</td><td>餺飥麵/在地料理。位於療癒之里根場村落內，提供熱騰騰的餺飥麵、蕎麥麵以及當地鄉土料理。是參觀完畢後最方便的用餐選擇。(山梨特色麵食)</td><td>1,500 - 2,500</td><td><a href="https://www.google.com/maps/search/?api=1&query=Shokujidokoro+Nenba" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>2.</td><td>手打ちそば やま邑</td><td>手工蕎麥麵。這是一家以手工製作蕎麥麵聞名的在地小店。提供冷/熱蕎麥麵，是體驗日本傳統麵食的好選擇。(傳統蕎麥麵)</td><td>1,200 - 2,000</td><td><a href="https://www.google.com/maps/search/?api=1&query=Teuchi+Soba+Yamamura" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>3.</td><td>ほうとう 蔵出し屋 西湖店</td><td>餺飥麵專賣。另一家靠近西湖地區的餺飥麵選擇，其湯頭和麵條各有特色，適合對餺飥麵情有獨鍾的旅客。(山梨特色麵食)</td><td>1,500 - 2,500</td><td><a href="https://www.google.com/maps/search/?api=1&query=Houtou+Kuradashiya+Saiko" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>4.</td><td>西湖レストハウス</td><td>簡餐/輕食。位於西湖邊的休息站，提供咖哩飯、拉麵、烏龍麵等簡單的日式簡餐，適合快速解決午餐並欣賞湖景。(日式簡餐)</td><td>800 - 1,500</td><td><a href="https://www.google.com/maps/search/?api=1&query=Saiko+Rest+House" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>5.</td><td>喫茶こしあん</td><td>咖啡/甜點/輕食。一家提供咖啡和甜點的休閒咖啡館，午餐時間也提供三明治或輕食套餐。適合想悠閒享受下午茶風格午餐的旅客。(咖啡/輕食)</td><td>1,000 - 1,800</td><td><a href="https://www.google.com/maps/search/?api=1&query=Kissa+Koshian" target="_blank" class="map-link">Google 地</a></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div id="day4" class="day-block">
+        <div class="day-header" onclick="toggleDay(this)">DAY 4: 12/16 (二) 🏞️ 忍野八海與山中湖 (使用 1DayPass) <span>▼</span></div>
+        <div class="day-body">
+            <h4>✅ 行程概要 (山中湖早午餐與遊船優先):</h4>
+            <ul>
+                <li>09:30 河口湖站(3號月台)搭乘 A-Line 巴士 → <a href="https://www.google.com/maps/search/?api=1&query=山中湖" target="_blank" class="map-link">山中湖</a> (約 44 分鐘車程)。</li>
+                <li>10:30 <strong>早午餐:</strong> 於山中湖 <a href="https://www.google.com/maps/search/?api=1&query=山中湖" target="_blank" class="map-link">地圖</a> 周邊享用早午餐 (如 山中湖ハム咖啡店)。進行山中湖 <a href="https://www.google.com/maps/search/?api=1&query=山中湖" target="_blank" class="map-link">地圖</a> KABA巴士或天鵝船體驗</li>
+                <li>13:30 搭乘 A-Line 巴士 → <a href="https://www.google.com/maps/search/?api=1&query=忍野八海" target="_blank" class="map-link">忍野八海</a> (約 15 分鐘車程)。</li>
+                <li>14:00 遊覽忍野八海 <a href="https://www.google.com/maps/search/?api=1&query=忍野八海" target="_blank" class="map-link">地圖</a> 與池塘群。</li>
+                <li>16:00 搭乘F-Line (左回り) 巴士返回河口湖站 (約 30 分鐘車程)。</li>
+                <li>17:30 晚餐: 河口湖/富士山站周邊。</li>
+                <li>19:30 返回 <a href="https://www.google.com/maps/search/?api=1&query=The+Noborisaka+village" target="_blank" class="map-link">The Noborisaka village</a>。</li>
+            </ul>
+
+            <h4>🍽️ 山中湖早午餐/咖啡廳推薦 (近花の都公園 <a href="https://www.google.com/maps/search/?api=1&query=Hana+no+Miyako+Park" target="_blank" class="map-link">地圖</a> )</h4>
+            <p>餐廳皆位山中湖旭日丘附近：山中湖ハム咖啡店，類型: 咖啡館、輕食、火腿專賣店。</p>
+
+            <h4>🚌 交通規劃：A-Line 巴士 (使用 1DayPass)</h4>
+            <p>*此 Pass 涵蓋 A-Line 巴士 (河口湖站 - 富士山站 - 忍野八海 - 山中湖)，可無限次搭乘。</p>
+            <div class="table-container">
+                <table class="transport-table">
+                    <tr><th>路線</th><th>搭車時間</th><th>乘車地點</th><th>抵達時間</th><th>抵達地點</th><th>乘車時間</th><th>票價</th></tr>
+                    <tr><td>A-Line 巴士 (往御殿場)</td><td>09:30</td><td>河口湖站(3號月台)</td><td>10:14</td><td>山中湖旭日丘</td><td>44 分鐘</td><td>使用 富士吉田·忍野·山中湖 1DayPass</td></tr>
+                    <tr><td>A-Line 巴士 (往河口湖)</td><td>13:30</td><td>山中湖旭日丘(巴士總站)</td><td>13:42</td><td><a href="https://www.google.com/maps/search/?api=1&query=忍野八海" target="_blank" class="map-link">忍野八海</a></td><td>12 分鐘</td><td>使用 富士吉田·忍野·山中湖 1DayPass</td></tr>
+                    <tr><td>F-Line (左回り)</td><td>16:04</td><td><a href="https://www.google.com/maps/search/?api=1&query=忍野八海" target="_blank" class="map-link">忍野八海</a></td><td>16:30</td><td>河口湖站</td><td>26 分鐘</td><td>使用 富士吉田·忍野·山中湖 1DayPass</td></tr>
+                </table>
+            </div>
+
+            <h4>🍽️ 河口湖車站或富士山車站（晚餐）</h4>
+            <div class="table-container">
+                <table>
+                    <tr><th>#</th><th>餐廳名稱</th><th>地點 (靠近的景點)</th><th>類型與特色</th><th>價格</th><th>Google Map 連結</th></tr>
+                    <tr><td>1.</td><td>不動茶屋 (Houtou Fudou) 河口湖站前店</td><td>河口湖站前</td><td>餺飥麵 (Houtou)。山梨縣必吃，濃郁湯頭與極粗蔬菜麵條。(山梨特色麵食)</td><td>1,500 - 2,500</td><td><a href="https://www.google.com/maps/search/?api=1&query=Houtou+Fudou+Kawaguchiko+Station" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>2.</td><td>河口湖烤肉 (焼肉)</td><td>河口湖站周邊</td><td>日式燒肉。提供富士吉田市當地的優質肉品，適合喜歡豐盛肉食的旅客。(肉類/在地食材)</td><td>4,000 - 7,000</td><td><a href="https://www.google.com/maps/search/?api=1&query=Kawaguchiko+Yakiniku" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>3.</td><td>M's KITCHEN</td><td>河口湖站周邊</td><td>日式定食/簡餐。提供多樣化日式定食，如炸雞塊、烤魚等，經濟實惠的日常選擇。(日式定食)</td><td>1,000 - 2,000</td><td><a href="https://www.google.com/maps/search/?api=1&query=M's+KITCHEN+Kawaguchiko" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>4.</td><td>富士山餃子</td><td>河口湖站周邊</td><td>餃子與拉麵。提供日式煎餃、水餃和拉麵，當地人氣的B級美食。(B級美食)</td><td>800 - 1,500</td><td><a href="https://www.google.com/maps/search/?api=1&query=Fujiyama+Gyoza" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>5.</td><td>海鮮居酒屋 富士山笑笑</td><td>河口湖站周邊</td><td>海鮮居酒屋。提供新鮮的生魚片、烤魚、串燒，適合想體驗日本夜生活和在地小酌。(居酒屋/海鮮)</td><td>3,500 - 5,500</td><td><a href="https://www.google.com/maps/search/?api=1&query=Seafood+Izakaya+Fujiyama+Warawara" target="_blank" class="map-link">Google 地圖</a></td></tr>
+                </table>
+            </div>
+             <div class="table-container">
+                <table>
+                    <tr><th>#</th><th>餐廳名稱</th><th>地點 (靠近的景點)</th><th>類型與特色</th><th>價格</th><th>Google Map 連結</th></tr>
+                    <tr><td>1.</td><td>吉田のうどん 極太 (Gokubuto)</td><td>富士山站周邊</td><td>吉田烏龍麵。富士吉田市的在地特色美食，麵條極粗極硬，適合喜歡挑戰在地風味的旅客。(地方特色麵食)</td><td>600 - 1,000</td><td><a href="https://www.google.com/maps/search/?api=1&query=Yoshida+no+Udon+Gokubuto" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>2.</td><td>串燒居酒屋 よっちゃん</td><td>富士山站周邊</td><td>在地串燒居酒屋。一家非常受當地人喜愛的傳統居酒屋，氣氛熱絡，提供各種烤串。(居酒屋/串燒)</td><td>3,500 - 5,000</td><td><a href="https://www.google.com/maps/search/?api=1&query=Yakitori+Izakaya+Yocchan" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>3.</td><td>フジヤマテラス (Fujiyama Terrace)</td><td>富士山站飯店</td><td>飯店自助餐。位於富士急行線飯店內，提供多國料理自助餐，選擇多樣，適合團體或需要多樣化食物的旅客。(自助餐/多國料理)</td><td>3,000 - 5,000</td><td><a href="https://www.google.com/maps/search/?api=1&query=Fujiyama+Terrace" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>4.</td><td>中華料理 東華軒</td><td>富士山站周邊</td><td>日式中華料理。提供拉麵、炒飯、餃子等，價格親民，份量足，是當地人的家庭餐廳。(中華料理/拉麵)</td><td>800 - 1,500</td><td><a href="https://www.google.com/maps/search/?api=1&query=Chinese+Restaurant+Toukaken" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                    <tr><td>5.</td><td>焼肉・しゃぶしゃぶ 富士山</td><td>富士山站周邊</td><td>涮涮鍋/燒肉。專門提供涮涮鍋和壽喜燒，適合想在晚餐享用溫暖鍋物或高品質牛肉的旅客。(鍋物/肉類)</td><td>4,000 - 7,000</td><td><a href="https://www.google.com/maps/search/?api=1&query=Yakiniku+Shabu+Shabu+Fujiyama" target="_blank" class="map-link">Google 地圖連結</a></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAY 5 -->
+    <div id="day5" class="day-block">
+        <div class="day-header" onclick="toggleDay(this)">DAY 5: 12/17 (三) 🏙️ 返回東京與六本木夜景 (換宿) <span>▼</span></div>
+        <div class="day-body">
+            <h4>✅ 行程概要 (換宿):</h4>
+            <ul>
+                <li>09:00 → 10:00 飯店 Check-out，富士山站/河口湖站。</li>
+                <li>13:00 搭乘高速巴士 → 新宿 Busta (3F)。</li>
+                <li>14:45 抵達新宿。</li>
+                <li>15:00 午餐 (Busta 新宿 駅弁 或 周邊)。</li>
+                <li>15:30 辦理入住 <a href="https://www.google.com/maps/search/?api=1&query=Toyoko+Inn+Shinjuku" target="_blank" class="map-link">東橫INN</a>。</li>
+                <li>17:00 乘坐地鐵 → <a href="https://www.google.com/maps/search/?api=1&query=Roppongi" target="_blank" class="map-link">六本木</a> (Roppongi)。</li>
+                <li>18:00 <a href="https://www.google.com/maps/search/?api=1&query=六本木之丘" target="_blank" class="map-link">六本木之丘</a> 聖誕嘉年華及六本木聖誕市集。</li>
+                <li>20:00 晚餐。</li>
+            </ul>
+
+            <h4>🚌 交通規劃：河口湖 → 新宿 (高速巴士)</h4>
+            <div class="table-container">
+                <table class="transport-table">
+                    <tr><th>路線</th><th>搭車時間</th><th>乘車地點</th><th>抵達時間</th><th>抵達地點</th><th>車程時間 (約)</th><th>備註</th></tr>
+                    <tr><td>高速巴士 (新宿-富士五湖)</td><td>13:00</td><td>河口湖站 (1346 1號車)</td><td>14:45</td><td>新宿 Busta (3F)</td><td>約 1小時 45分</td><td><a href="#" class="map-link">新宿高速巴士總站（Busta新宿）完全攻略</a></td></tr>
+                </table>
+            </div>
+
+            <h4>🚌 交通規劃：東橫INN->六本木夜景</h4>
+            <div class="table-container">
+                <table class="transport-table">
+                    <tr><th>路線</th><th>搭車時間</th><th>乘車地點</th><th>抵達時間</th><th>抵達地點</th><th>車程時間</th><th>備註</th></tr>
+                    <tr><td>去程 (1) 東京Metro丸之內線</td><td>17:00</td><td>新宿御苑前站 (M10)</td><td>17:05</td><td>新宿三丁目站 (M09/E01)</td><td>5 分鐘</td><td>短程搭乘，前往大江戶線轉乘站。</td></tr>
+                    <tr><td>去程 (2) 都營大江戶線</td><td>17:15</td><td>新宿三丁目站 (E01)</td><td>17:25</td><td>六本木站 (E23)</td><td>10 分鐘</td><td>地鐵車資約220-250。六本木站有通往六本木之丘的通道。</td></tr>
+                    <tr><td>六本木之丘</td><td>17:30</td><td>六本木站</td><td>20:00</td><td>六本木之丘/周邊餐廳</td><td>-</td><td>抵達後步行 5-10 分鐘至六本木之丘，觀賞聖誕市集與點燈。</td></tr>
+                    <tr><td>回程 (1) 都營大江戶線</td><td>21:00</td><td>六本木站 (E23)</td><td>21:10</td><td>新宿三丁目站 (E01)</td><td>10 分鐘</td><td>晚餐結束後返回。請預留步行至六本木站的時間。</td></tr>
+                    <tr><td>回程 (2) 東京Metro丸之內線</td><td>21:20</td><td>新宿三丁目站 (M09)</td><td>21:25</td><td>新宿御苑前站 (M10)</td><td>5 分鐘</td><td>步行返回東橫INN。</td></tr>
+                </table>
+            </div>
+
+            <h4>🍽️ 六本木之丘（晚餐）</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>餐廳名稱</th>
+                            <th>地點 (靠近的景點)</th>
+                            <th>類型與特色</th>
+                            <th>價格 (每人日圓)</th>
+                            <th>Google 地圖連結</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>叙々苑 六本木本店 (日式燒肉)</td>
+                            <td>六本木之丘 (步行 5-8 分鐘)</td>
+                            <td>高級日式燒肉 (焼肉)。是日本知名的連鎖高級燒肉店。建議可以點午間套餐會更划算。</td>
+                            <td>8,000 - 15,000+</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=叙々苑+六本木本店" target="_blank" class="map-link">查看地圖</a></td>
+                        </tr>
+                        <tr>
+                            <td>AFURI 六本木交差點店</td>
+                            <td>六本木站 (步行 3 分鐘)</td>
+                            <td>柚子鹽拉麵。如果您還沒吃過，這是最經典的選擇</td>
+                            <td>1,200 - 1,800</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=AFURI+六本木交差點店" target="_blank" class="map-link">查看地圖</a></td>
+                        </tr>
+                        <tr>
+                            <td>鳥貴族 (Torikizoku)</td>
+                            <td>六本木站 (步行 5 分鐘)</td>
+                            <td>烤雞串居酒屋 (焼鳥)。所有菜色均一價（約 ¥360），CP值極高。 (居酒屋/串燒)</td>
+                            <td>3,000 - 4,500</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=鳥貴族+六本木店" target="_blank" class="map-link">查看地圖</a></td>
+                        </tr>
+                        <tr>
+                            <td>富士そば (Fuji Soba)</td>
+                            <td>六本木站 (周邊有分店)</td>
+                            <td>快速蕎麥/烏龍麵。日本常見的連鎖蕎麥麵店，且多為 24 小時營業。(蕎麥麵/烏龍麵)</td>
+                            <td>500 - 1,000</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=富士そば+六本木" target="_blank" class="map-link">查看地圖</a></td>
+                        </tr>
+                        <tr>
+                            <td>松屋 (Matsuya)</td>
+                            <td>六本木站 (周邊有分店)</td>
+                            <td>日式丼飯連鎖。是日本最平價的國民美食之一。(丼飯/定食)</td>
+                            <td>500 - 800</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=松屋+六本木" target="_blank" class="map-link">查看地圖</a></td>
+                        </tr>
+                        <tr>
+                            <td>つるとんたん (Tsurutontan)</td>
+                            <td>六本木 (步行 10 分鐘)</td>
+                            <td>特色烏龍麵 (うどん)。 (烏龍麵/鍋物)</td>
+                            <td>1,800 - 3,500</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=つるとんたん+六本木" target="_blank" class="map-link">查看地圖</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAY 6 -->
+    <div id="day6" class="day-block">
+        <div class="day-header" onclick="toggleDay(this)">DAY 6: 12/18 (四) 🚢 橫濱一日遊 (中華街/紅磚倉庫) <span>▼</span></div>
+        <div class="day-body">
+            <h4>✅ 行程概要:</h4>
+            <ul>
+                <li>東橫INN 新宿御苑前站</li>
+                <li><a href="https://www.google.com/maps/search/?api=1&query=明治神宮" target="_blank" class="map-link">明治神宮</a> (午餐推薦AFURI柚子拉麵)</li>
+                <li>橫濱相鐵JOINUS (午餐推薦AFURI柚子拉麵)</li>
+                <li>橫濱空中纜車(日落時段)</li>
+                <li>紅磚倉庫1或2號(免費區)( 傍晚或晚上)</li>
+                <li>晚餐: 鮪魚問屋 三浦三崎港 橫濱WORLD PORTERS店 或隨機選</li>
+            </ul>
+
+            <h4>🚆 交通規劃：新宿 → 橫濱 (櫻木町/元町·中華街)</h4>
+            <div class="table-container">
+                <table class="transport-table">
+                    <tr><th>路線</th><th>搭車時間</th><th>乘車地點</th><th>抵達時間</th><th>抵達地點</th><th>車程時間</th><th>備註</th></tr>
+                    <tr><td>去程 (1) 東京Metro丸之內線</td><td>09:00</td><td>新宿御苑前站 (M10)</td><td>09:05</td><td>新宿三丁目站 (M09/F13)</td><td>5 分鐘</td><td>短程搭乘，轉乘至副都心線。</td></tr>
+                    <tr><td>去程 (2) 東京Metro副都心線</td><td>09:10</td><td>新宿三丁目站 (F13)</td><td>09:15</td><td>明治神宮前站 (F15/C03)</td><td>5 分鐘</td><td>下車即達明治神宮入口。</td></tr>
+                    <tr><td>觀光/午餐</td><td>12:00</td><td>明治神宮前站 (F15)</td><td>12:05</td><td>澀谷站 (F16)</td><td>5 分鐘</td><td>參觀完畢後，從原宿/表參道搭乘副都心線前往澀谷。</td></tr>
+                    <tr><td>去程 (3) 東急東橫線 特急/通勤特急</td><td>12:15</td><td>澀谷站 (TY01) 副都心線直通</td><td>12:45</td><td>橫濱站 (TY21)</td><td>30 分鐘</td><td>直通 橫濱站。車資約 ¥460-500。</td></tr>
+                    <tr><td>購物 相鐵JOINUS/橫濱站</td><td>12:50</td><td>橫濱站</td><td>15:30</td><td>橫濱站</td><td>2小時40分</td><td>重點逛街，相鐵JOINUS 直通橫濱站。建議午餐在此解決。</td></tr>
+                    <tr><td>橫濱 (1) JR京濱東北/根岸線</td><td>15:40</td><td>橫濱站</td><td>15:45</td><td>櫻木町站</td><td>5 分鐘</td><td>快速抵達纜車乘車處附近。</td></tr>
+                    <tr><td>橫濱 (2) 步行</td><td>15:55</td><td>櫻木町站</td><td>16:10</td><td>空中纜車 櫻木町站乘車處</td><td>15 分鐘</td><td>預留步行時間。確保在日落前搭乘。</td></tr>
+                    <tr><td>橫濱 (3) 空中纜車</td><td>17:20</td><td>運河公園站 (紅磚倉庫旁)</td><td>17:35</td><td>紅磚倉庫 步行</td><td>15 分鐘</td><td>纜車終點靠近紅磚倉庫，可直接在傍晚/晚上遊覽。</td></tr>
+                    <tr><td>晚餐步行</td><td>19:00</td><td>紅磚倉庫</td><td>19:10</td><td>鮪魚問屋 三浦三崎港 (WORLD PORTERS)</td><td>10 分鐘</td><td>WORLD PORTERS 位於紅磚倉庫和纜車終點之間。</td></tr>
+                    <tr><td>回程 (1) 港區未來線</td><td>20:30</td><td>馬車道站 (MM04)</td><td>20:35</td><td>橫濱站 (TY21)</td><td>5 分鐘</td><td>從晚餐地點步行至馬車道站，搭一站地鐵至橫濱站轉乘。</td></tr>
+                    <tr><td>回程 (2) 東急東橫線 特急/通勤特急</td><td>20:45</td><td>橫濱站 (TY21)</td><td>21:20</td><td>澀谷站 (TY01)</td><td>35 分鐘</td><td>直通車返回東京。</td></tr>
+                    <tr><td>回程 (3) 東京Metro副都心線</td><td>21:25</td><td>澀谷站 (F16)</td><td>21:35</td><td>新宿三丁目站 (F13)</td><td>10 分鐘</td><td>繼續直通運轉。</td></tr>
+                    <tr><td>回程 (4) 東京Metro丸之內線</td><td>21:40</td><td>新宿三丁目站 (M09)</td><td>21:45</td><td>新宿御苑前站 (M10)</td><td>5 分鐘</td><td>步行返回東橫INN。</td></tr>
+                </table>
+            </div>
+
+            <h4>🍽️ 原宿/明治神宮（午餐）和 橫濱站/港區未來（晚餐）</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>餐廳名稱</th>
+                            <th>地點 (靠近的景點)</th>
+                            <th>類型與特色</th>
+                            <th>價格 (每人日圓)</th>
+                            <th>Google 地圖連結</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Henry's Burger Harajuku</td>
+                            <td>原宿/明治神宮 (步行約 5 分鐘)</td>
+                            <td>和牛漢堡。是原宿區的人氣漢堡店，點雙層牛肉的漢堡。(漢堡/和牛)</td>
+                            <td>1,500 - 2,500</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=Henry's+Burger+Harajuku" target="_blank" class="map-link">查看地圖 (原宿本店)</a></td>
+                        </tr>
+                        <tr>
+                            <td>AFURI 原宿店</td>
+                            <td>原宿/明治神宮</td>
+                            <td>柚子鹽拉麵。清爽湯底與炭烤叉燒，是日本拉麵界獨特的「清流」派別。(拉麵)</td>
+                            <td>1,200 - 1,500</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=AFURI+原宿店" target="_blank" class="map-link">查看地圖 (原宿店)</a></td>
+                        </tr>
+                        <tr>
+                            <td>bills 橫濱紅磚倉庫</td>
+                            <td>橫濱紅磚倉庫 (景觀餐廳)</td>
+                            <td>澳洲人氣景觀餐廳。被譽為「世界第一的鬆餅」，以提供精緻的早午餐和午晚餐聞名，位於紅磚倉庫內，可欣賞橫濱港景。(景觀餐廳/鬆餅/西式)</td>
+                            <td>3,500 - 6,000</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=bills+橫濱紅磚倉庫" target="_blank" class="map-link">查看地圖 (橫濱紅磚倉庫)</a></td>
+                        </tr>
+                        <tr>
+                            <td>淺草今半 (Asakusa Imahan)</td>
+                            <td>橫濱站 (JOINUS B1)</td>
+                            <td>壽喜燒/牛肉丼飯。日本知名的老牌牛肉專門店，午間價格比晚餐實惠。(和牛/丼飯)</td>
+                            <td>2,500 - 4,500</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=淺草今半+JOINUS" target="_blank" class="map-link">查看地圖 (JOINUS 分店)</a></td>
+                        </tr>
+                        <tr>
+                            <td>炸牛排 もと村 (Motomura)</td>
+                            <td>橫濱站 (周邊有分店)</td>
+                            <td>炸牛排 (牛カツ)。日本近年興起的特色美食。(炸物/肉類)</td>
+                            <td>1,500 - 2,500</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=炸牛排+もと村+橫濱" target="_blank" class="map-link">查看地圖 (橫濱站西口店)</a></td>
+                        </tr>
+                        <tr>
+                            <td>鮪魚問屋 三浦三崎港</td>
+                            <td>橫濱 WORLD PORTERS</td>
+                            <td>鮪魚專門迴轉壽司。高CP值的日本國民美食代表。(壽司/海鮮)</td>
+                            <td>3,500 - 5,000</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=鮪魚問屋+三浦三崎港+WORLD+PORTERS" target="_blank" class="map-link">查看地圖 (WORLD PORTERS 店)</a></td>
+                        </tr>
+                        <tr>
+                            <td>甘味処 鎌倉</td>
+                            <td>Yokohama World Porters 1F</td>
+                            <td>備用飯後甜點/輕食。主打日式傳統飲品和甜點，招牌是「蕨餅」（わらび餅），口感軟糯，適合在晚餐後品嚐日式點心。(甜點/蕨餅)</td>
+                            <td>800 - 1,500</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=甘味処+鎌倉+Yokohama+World+Porters" target="_blank" class="map-link">查看地圖 (WORLD PORTERS 店)</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAY 7 -->
+    <div id="day7" class="day-block">
+        <div class="day-header" onclick="toggleDay(this)">DAY 7: 12/19 (五) 🛍️ 澀谷、原宿潮流採買與告別晚餐 <span>▼</span></div>
+        <div class="day-body">
+            <h4>✅ 行程概要 (購物日):</h4>
+            <ul>
+                <li>新宿LUMINE</li>
+                <li>澀谷 Hikarie(與SKY同棟)</li>
+                <li>澀谷SKY (17:40)</li>
+                <li>SKY結束後晚餐(可隨選)</li>
+                <li>澀谷十字路口>青之洞窟(公園通到代代木公園那段,燈從17:00~22:00)</li>
+                <li>17:40澀谷SKY已預約，DAY 7: 12/19 (五)其餘行程配合調整</li>
+            </ul>
+
+            <h4>🚆 交通規劃：新宿 -> 澀谷</h4>
+            <div class="table-container">
+                <table class="transport-table">
+                    <tr><th>路線</th><th>搭車時間</th><th>乘車地點</th><th>抵達時間</th><th>抵達地點</th><th>車程時間</th><th>備註</th></tr>
+                    <tr><td>去程 (1) Metro丸之內線</td><td>13:00</td><td>新宿御苑前站 (M10)</td><td>13:05</td><td>新宿三丁目站 (M09)</td><td>5 分鐘</td><td>步行至 LUMINE EST/LUMINE 2，或在新宿三丁目站出口旁的 LUMINE 1。</td></tr>
+                    <tr><td>購物 (1) 新宿LUMINE</td><td>13:10</td><td>新宿LUMINE</td><td>15:30</td><td>新宿LUMINE</td><td>2 小時 20 分鐘</td><td>午餐建議在 LUMINE 周邊解決，以節省時間。</td></tr>
+                    <tr><td>去程 (2) JR 埼京線/湘南新宿線</td><td>15:30</td><td>新宿站 (JR月台)</td><td>15:37</td><td>澀谷站 (JR)</td><td>7 分鐘</td><td>最快路線 前往澀谷。</td></tr>
+                    <tr><td>購物 (2) 澀谷 Hikarie</td><td>15:45</td><td>澀谷站 (JR)</td><td>17:00</td><td>澀谷 Hikarie</td><td>1 小時 15 分鐘</td><td>Hikarie 直通澀谷站。注意時間，避免影響 SKY 預約。</td></tr>
+                    <tr><td>SKY 報到 步行</td><td>17:00</td><td>澀谷 Hikarie</td><td>17:15</td><td>澀谷 SKY</td><td>15 分鐘</td><td>SKY 預約時間為 17:40。必須在預約時間 30 分鐘前（即 17:10）報到，請務必提早！</td></tr>
+                    <tr><td>SKY 觀景活動</td><td>17:40</td><td>澀谷 SKY</td><td>19:00</td><td>澀谷 SKY</td><td>1 小時 20 分鐘</td><td>欣賞日落與夜景。</td></tr>
+                    <tr><td>晚餐</td><td>19:15</td><td>澀谷 Scramble Square</td><td>20:30</td><td>澀谷站周邊</td><td>1 小時 15 分鐘</td><td>Scramble Square 樓上有豐富餐廳或隨選附近餐廳。</td></tr>
+                    <tr><td>夜間活動 (1) 步行</td><td>20:45</td><td>澀谷十字路口</td><td>21:00</td><td>青之洞窟 (代代木公園那段)</td><td>15 分鐘</td><td>從澀谷十字路口沿著公園通步行至代代木公園的「青之洞窟」點燈路段。</td></tr>
+                    <tr><td>夜間活動 (2) 觀賞</td><td>21:00</td><td>青之洞窟</td><td>22:00</td><td>青之洞窟</td><td>1 小時</td><td>點燈至 22:00，時間充裕。</td></tr>
+                    <tr><td>回程 (1) JR 山手線/埼京線</td><td>22:15</td><td>澀谷站 (JR)</td><td>22:25</td><td>新宿站 (JR)</td><td>10 分鐘</td><td>從澀谷站搭車返回新宿。</td></tr>
+                    <tr><td>回程 (2) Metro丸之內線</td><td>22:35</td><td>新宿站 (M08)</td><td>22:40</td><td>新宿御苑前站 (M10)</td><td>5 分鐘</td><td>步行返回東橫INN。</td></tr>
+                </table>
+            </div>
+
+            <h4>🍽️ 午餐、晚餐 (新宿/澀谷)</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>餐廳名稱</th>
+                            <th>地點 (靠近的景點)</th>
+                            <th>類型與特色</th>
+                            <th>價格 (日圓)</th>
+                            <th>Google 地圖連結</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>人形町 今半</td>
+                            <td>新宿高島屋</td>
+                            <td>壽喜燒/涮涮鍋。高級和牛名店，午餐時段通常有較實惠的套餐。</td>
+                            <td>5,000 - 10,000+</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=人形町+今半+新宿高島屋" target="_blank" class="map-link">Google 地圖連結</a></td>
+                        </tr>
+                        <tr>
+                            <td>和幸</td>
+                            <td>伊勢丹會館新宿店</td>
+                            <td>炸豬排。高人氣連鎖店，白飯高麗菜絲吃到飽。</td>
+                            <td>1,500 - 3,000</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=和幸+伊勢丹會館新宿店" target="_blank" class="map-link">Google 地圖連結</a></td>
+                        </tr>
+                        <tr>
+                            <td>Tsubame Grill</td>
+                            <td>新宿 LUMINE 1/EST</td>
+                            <td>日式洋食經典。招牌是「鋁箔紙包漢堡排」。</td>
+                            <td>1,500 - 2,500</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=Tsubame+Grill+新宿" target="_blank" class="map-link">Google 地圖連結</a></td>
+                        </tr>
+                        <tr>
+                            <td>AFURI 澀谷店</td>
+                            <td>澀谷 MARK CITY 4F</td>
+                            <td>柚子鹽拉麵。清爽湯頭，交通便利。</td>
+                            <td>1,200 - 1,500</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=AFURI+澀谷店" target="_blank" class="map-link">Google 地圖連結</a></td>
+                        </tr>
+                        <tr>
+                            <td>Toritake (鳥竹)</td>
+                            <td>澀谷站 (道玄坂)</td>
+                            <td>烤雞串丼飯定食。澀谷老牌烤雞店。</td>
+                            <td>1,000 - 2,000</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=Toritake+澀谷" target="_blank" class="map-link">Google 地圖連結</a></td>
+                        </tr>
+                        <tr>
+                            <td>梅丘寿司の美登利</td>
+                            <td>澀谷 Mark City</td>
+                            <td>高 CP 值迴轉壽司。</td>
+                            <td>3,500 - 5,000</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=梅丘寿司の美登利+澀谷" target="_blank" class="map-link">Google 地圖連結</a></td>
+                        </tr>
+                        <tr>
+                            <td>澀谷 Scramble Square 樓上餐廳</td>
+                            <td>澀谷 Scramble Square 高島屋 12F~14F</td>
+                            <td>多國料理/景觀餐廳。</td>
+                            <td>4,000 - 7,000</td>
+                            <td><a href="https://www.google.com/maps/search/?api=1&query=澀谷+Scramble+Square+餐廳" target="_blank" class="map-link">Google 地圖連結</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAY 8 -->
+    <div id="day8" class="day-block">
+        <div class="day-header" onclick="toggleDay(this)">DAY 8: 12/20 (六) 🛫 歸途 (14:00 班機) <span>▼</span></div>
+        <div class="day-body">
+            <h4>✅ 行程概要:</h4>
+            <ul>
+                <li>08:30 飯店早餐 (或附近輕食)。</li>
+                <li>09:00 → 09:20 辦理退房，前往 JR 新宿站。</li>
+                <li>09:39 搭乘 N'EX (成田特快)。</li>
+                <li>10:58 抵達成田機場第一航廈 (NRT T1)。</li>
+                <li>11:00 辦理登機手續 (預留 3 小時)。</li>
+                <li>14:00 班機起飛。</li>
+            </ul>
+
+            <h4>🚝 交通規劃：新宿 → 成田機場 (NRT)</h4>
+            <div class="table-container">
+                <table class="transport-table">
+                    <tr><th>路線</th><th>搭車時間</th><th>乘車地點</th><th>抵達時間</th><th>抵達地點</th><th>乘車時間</th><th>票價</th></tr>
+                    <tr><td>N'EX</td><td>09:39</td><td>新宿</td><td>10:58</td><td>成田機場第一航廈 (NRT)</td><td>約 1小時 19分</td><td>已購票(YR)</td></tr>
+                </table>
+            </div>
+
+            <h4>🔑 最終檢查清單 (Checklist)</h4>
+            <ul>
+                <li>☐ 護照、機票、現金/信用卡 (務必隨身攜帶)。</li>
+                <li>☐ N'EX 回程票已劃位 (10:00 AM 左右班次)。</li>
+                <li>☐ 富士急行高速巴士回程預約票券 (QR Code 或紙本)。</li>
+                <li>☐ 行李秤重 (以免超重)。</li>
+                <li>☐ 飯店房卡交還/退房手續完成。</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer style="text-align: center; padding: 2rem; color: #666; font-size: 0.9rem;">
+        &copy; 2024 東京富士山8日深度旅行手冊
+    </footer>
+
+</div>
+
+<script>
+    function toggleDay(header) {
+        const body = header.nextElementSibling;
+        const arrow = header.querySelector('span');
         
-        /**
-         * 新增花費細項
-         */
-        document.getElementById('add-expense-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const amount = parseFloat(document.getElementById('new-expense-amount').value);
-            const currency = document.getElementById('new-expense-currency').value;
-            const description = document.getElementById('new-expense-description').value.trim();
-
-            if (isNaN(amount) || amount <= 0 || !description) {
-                console.error('無效的花費輸入。');
-                return;
-            }
-            
-            const item = findItemById(window.editingDayKey, window.editingItemId);
-            if (!item) return;
-
-            const newExpense = {
-                id: crypto.randomUUID(),
-                amount: amount,
-                currency: currency,
-                description: description,
-                // 儲存當時的 NTD->JPY 匯率
-                rate: window.NTD_TO_JPY_RATE 
-            };
-
-            if (!item.expenses) item.expenses = [];
-            item.expenses.push(newExpense);
-            
-            renderExpenses(item);
-            
-            // 清空表單欄位
-            document.getElementById('new-expense-amount').value = '';
-            document.getElementById('new-expense-description').value = '';
-        });
-
-        /**
-         * 刪除花費細項
-         * @param {string} expenseId - 欲刪除的花費 ID
-         */
-        window.deleteExpense = function(expenseId) {
-            const item = findItemById(window.editingDayKey, window.editingItemId);
-            if (!item || !item.expenses) return;
-
-            const index = item.expenses.findIndex(exp => exp.id === expenseId);
-            if (index !== -1) {
-                item.expenses.splice(index, 1);
-                renderExpenses(item);
-            }
+        if (body.classList.contains('open')) {
+            body.classList.remove('open');
+            arrow.textContent = '▼';
+        } else {
+            body.classList.add('open');
+            arrow.textContent = '▲';
         }
-        
-        // --- 圖像生成 (Image Generation) ---
-        
-        /**
-         * 顯示圖像生成錯誤訊息
-         * @param {string} message 
-         */
-        function showImageError(message) {
-            document.getElementById('image-error-details').textContent = message;
-            document.getElementById('image-error-message').classList.remove('hidden');
-        }
+    }
+</script>
 
-        /**
-         * 隱藏圖像生成錯誤訊息
-         */
-        function hideImageError() {
-            document.getElementById('image-error-message').classList.add('hidden');
-        }
-
-        /**
-         * 顯示載入狀態
-         * @param {boolean} isLoading 
-         */
-        function setImageLoading(isLoading) {
-            const spinner = document.getElementById('image-loading-indicator');
-            const button = document.getElementById('generate-image-btn');
-            
-            if (isLoading) {
-                spinner.classList.remove('hidden');
-                document.getElementById('image-status-message').classList.add('hidden');
-                document.getElementById('preview-generated-image').classList.add('hidden');
-                button.disabled = true;
-                document.getElementById('image-btn-text').textContent = '生成中...';
-                document.getElementById('save-image-btn').disabled = true;
-            } else {
-                spinner.classList.add('hidden');
-                button.disabled = false;
-                document.getElementById('image-btn-text').textContent = '生成新插圖';
-            }
-        }
-
-        /**
-         * 處理圖像生成 API 呼叫 (使用指數退避)
-         * @param {string} prompt - 圖像描述
-         * @returns {Promise<string|null>} Base64 圖像數據或 null
-         */
-        async function fetchWithExponentialBackoff(prompt) {
-            let lastError = null;
-            const payload = { 
-                instances: [{ prompt: prompt }], 
-                parameters: { "sampleCount": 1 } 
-            };
-
-            for (let i = 0; i < MAX_RETRIES; i++) {
-                try {
-                    const response = await fetch(IMAGE_API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        const errorBody = await response.json();
-                        lastError = `API 錯誤: ${response.status} - ${errorBody.error?.message || '未知錯誤'}`;
-                        throw new Error(lastError);
-                    }
-
-                    const result = await response.json();
-                    const base64Data = result?.predictions?.[0]?.bytesBase64Encoded;
-
-                    if (base64Data) {
-                        return `data:image/png;base64,${base64Data}`;
-                    } else {
-                        lastError = 'API 回應中未包含圖像數據。';
-                        throw new Error(lastError);
-                    }
-                } catch (error) {
-                    lastError = error.message;
-                    console.error(`圖像生成嘗試 ${i + 1} 失敗:`, error);
-                    if (i < MAX_RETRIES - 1) {
-                        const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                    }
-                }
-            }
-            throw new Error(`圖像生成最終失敗: ${lastError}`);
-        }
-        
-        /**
-         * 觸發圖像生成
-         */
-        window.handleGenerateImage = async function() {
-            hideImageError();
-            const prompt = document.getElementById('image-prompt-input').value.trim();
-            const previewImg = document.getElementById('preview-generated-image');
-            
-            if (prompt.length < 5) {
-                showImageError('請輸入更詳細的描述，至少 5 個字元。');
-                return;
-            }
-
-            setImageLoading(true);
-            
-            try {
-                const imageUrl = await fetchWithExponentialBackoff(`日式水墨風格，生動的插圖，主題: ${prompt}`);
-                
-                previewImg.src = imageUrl;
-                previewImg.classList.remove('hidden');
-                document.getElementById('image-status-message').classList.add('hidden');
-                document.getElementById('save-image-btn').disabled = false; // 啟用儲存按鈕
-
-            } catch (error) {
-                console.error('圖像生成失敗:', error);
-                previewImg.classList.add('hidden');
-                document.getElementById('image-status-message').classList.remove('hidden');
-                showImageError(error.message);
-                document.getElementById('save-image-btn').disabled = true;
-            } finally {
-                setImageLoading(false);
-            }
-        }
-        
-        /**
-         * 開啟插圖管理模組
-         * @param {string} itemId - 行程 ID
-         * @param {string} dayKey - Day Key
-         */
-        window.openImageManager = function(itemId, dayKey) {
-            window.editingItemId = itemId;
-            window.editingDayKey = dayKey;
-            
-            const item = findItemById(dayKey, itemId);
-            if (!item) return;
-
-            document.getElementById('current-image-activity').textContent = item.activity;
-            
-            const previewImg = document.getElementById('preview-generated-image');
-            const statusMessage = document.getElementById('image-status-message');
-            const saveBtn = document.getElementById('save-image-btn');
-            const removeBtn = document.getElementById('remove-image-btn');
-            
-            // 重置狀態
-            setImageLoading(false);
-            hideImageError();
-            document.getElementById('image-prompt-input').value = '';
-            
-            if (item.imageUrl) {
-                previewImg.src = item.imageUrl;
-                previewImg.classList.remove('hidden');
-                statusMessage.classList.add('hidden');
-                saveBtn.disabled = false;
-                removeBtn.disabled = false;
-            } else {
-                previewImg.classList.add('hidden');
-                previewImg.src = '';
-                statusMessage.classList.remove('hidden');
-                statusMessage.textContent = '在此輸入描述並生成圖像，或貼上外部圖片連結。';
-                saveBtn.disabled = true;
-                removeBtn.disabled = true;
-            }
-
-            document.getElementById('image-manager-container').classList.remove('hidden');
-        }
-        
-        /**
-         * 關閉插圖管理模組
-         */
-        window.closeImageManager = function(event) {
-            if (event && event.target !== event.currentTarget) return; // 避免內部點擊關閉
-            document.getElementById('image-manager-container').classList.add('hidden');
-            // 清除編輯狀態
-            window.editingItemId = null;
-            window.editingDayKey = null;
-        }
-
-        /**
-         * 儲存圖像連結到行程項目
-         */
-        window.saveImageToItem = async function() {
-            const item = findItemById(window.editingDayKey, window.editingItemId);
-            const previewImg = document.getElementById('preview-generated-image');
-            
-            if (!item || previewImg.classList.contains('hidden')) {
-                showImageError('無可儲存的圖像。');
-                return;
-            }
-            
-            item.imageUrl = previewImg.src;
-            await saveItineraryData();
-            renderItinerary();
-            closeImageManager();
-        }
-
-        /**
-         * 從行程項目中移除圖像
-         */
-        window.removeImageFromItem = async function() {
-            const item = findItemById(window.editingDayKey, window.editingItemId);
-            if (!item) return;
-            
-            item.imageUrl = '';
-            await saveItineraryData();
-            renderItinerary();
-            
-            // 重置模組顯示
-            document.getElementById('preview-generated-image').classList.add('hidden');
-            document.getElementById('image-status-message').classList.remove('hidden');
-            document.getElementById('save-image-btn').disabled = true;
-            document.getElementById('remove-image-btn').disabled = true;
-            document.getElementById('image-status-message').textContent = '圖像已移除。再次輸入描述並生成圖像。';
-        }
-        
-        // --- 初始化與事件監聽 (Initialization and Listeners) ---
-
-        /**
-         * 認證並載入資料
-         */
-        async function authAndLoad() {
-            try {
-                // 1. 初始化 Firebase
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                // 2. 登入/認證
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                // 3. 設置認證狀態監聽
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        isAuthReady = true;
-                        document.getElementById('user-id-display').textContent = `雲端帳戶 ID: ${userId} (私人行程)`;
-                        loadItineraryData(); // 認證完成後載入資料
-                    } else {
-                        // 雖然在 Canvas 環境下不應發生，但以防萬一
-                        userId = null;
-                        isAuthReady = true; // 即使是未登入狀態，也算認證檢查完成
-                        document.getElementById('user-id-display').textContent = `雲端帳戶 ID: 未連線`;
-                        document.getElementById('loading').classList.add('hidden');
-                        console.error('Firebase 認證失敗或使用者登出。');
-                    }
-                });
-                
-            } catch (error) {
-                console.error('Firebase 初始化或認證失敗:', error);
-                document.getElementById('user-id-display').textContent = `連線錯誤: ${error.code}`;
-                document.getElementById('loading').classList.add('hidden');
-            }
-        }
-
-        // 頁面載入後執行
-        window.onload = function() {
-            authAndLoad();
-            renderLiveRateDisplay(); // 渲染匯率
-
-            // 初始化時間選項 (雖然表單開啟時會檢查，但先確保函式存在)
-            const timeOptions = generateTimeOptions();
-            document.getElementById('time').innerHTML = timeOptions;
-            document.getElementById('start-time').innerHTML = timeOptions;
-            document.getElementById('end-time').innerHTML = timeOptions;
-            
-            // 主表單事件監聽
-            document.getElementById('add-item-btn').addEventListener('click', () => window.openForm(null, window.currentDay));
-            document.getElementById('item-form').addEventListener('submit', submitFormHandler);
-            document.getElementById('transport').addEventListener('change', handleTransportChange);
-            
-            // 花費管理事件監聽
-            document.getElementById('manage-expenses-btn').addEventListener('click', window.openExpenseManager);
-            document.getElementById('toggle-currency-btn').addEventListener('click', window.toggleCurrency);
-            
-            // 由於花費管理是在主表單內開啟，所以不需要額外的 closeForm(event) 邏輯。
-            // 只需要在模組容器上綁定點擊事件
-            window.closeForm = function(event) {
-                if (event.target === event.currentTarget) {
-                    hideForm();
-                }
-            }
-            window.closeExpenseManager = function(event) {
-                if (event.target === event.currentTarget) {
-                    hideExpenseManager();
-                }
-            }
-            
-            // 確保每次開啟表單時，如果交通是計程車，終點站的輸入就會觸發按鈕更新
-            document.getElementById('end-point').addEventListener('input', updateUberButton);
-        }
-    </script>
 </body>
 </html>
